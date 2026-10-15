@@ -470,25 +470,6 @@ textarea {
   align-items: start;
 }
 
-.detail-hero {
-  border-radius: 20px;
-  height: 260px;
-  display: grid;
-  place-items: center;
-  color: #fff;
-  font-family: var(--font-display);
-  font-size: 56px;
-  margin-bottom: 24px;
-  overflow: hidden;
-}
-
-.detail-hero img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  display: block;
-}
-
 .info-list {
   list-style: none;
   margin: 0;
@@ -695,6 +676,435 @@ table.bookings .ref {
   padding-bottom: 8px;
 }
 
+/* ---- reservation wizard (devision.md; styled after reservation.png) ---- */
+
+.wz-steps {
+  margin-bottom: 32px;
+}
+
+.wz-steps-title {
+  font-size: clamp(22px, 3vw, 30px);
+  margin-bottom: 16px;
+}
+
+/* Soft track holding the white step cards. */
+.wz-track {
+  background: #f1f4f9;
+  border-radius: 20px;
+  padding: 14px;
+}
+
+.wz-rail {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 10px;
+  position: relative;
+  overflow-x: auto;
+}
+
+/* Navy connector rail running behind the step cards. */
+.wz-rail::before {
+  content: '';
+  position: absolute;
+  left: 26px;
+  right: 26px;
+  top: 28px;
+  height: 2px;
+  background: #cfd6e4;
+  z-index: 0;
+}
+
+.wz-step {
+  flex: 1 0 150px;
+  min-width: 150px;
+}
+
+.wz-step-btn {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+  text-align: left;
+  background: #fff;
+  border: 1px solid #e6e9f0;
+  border-radius: 14px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.wz-step-btn:disabled {
+  cursor: default;
+}
+
+.wz-step-btn:not(:disabled):hover {
+  border-color: var(--lilac);
+  box-shadow: 0 6px 18px rgba(24, 30, 75, 0.08);
+}
+
+.wz-step.in-progress .wz-step-btn {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 2px rgba(24, 30, 75, 0.1);
+}
+
+.wz-node {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid #cfd6e4;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.wz-step.completed .wz-node,
+.wz-step.in-progress .wz-node {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
+.wz-step-name {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--ink-2);
+}
+
+.wz-step-meta {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.wz-step .badge {
+  margin-top: 2px;
+}
+
+/* ---- wizard content ---- */
+
+.wz-panel {
+  border: 1px solid var(--hairline);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--card-shadow);
+}
+
+.wz-panel-title {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+.wz-panel-text {
+  font-size: 14px;
+  line-height: 1.7;
+  margin: 0 0 18px;
+}
+
+.wz-subtitle {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink-2);
+  margin: 20px 0 12px;
+}
+
+.wz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.wz-grid-tight {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+.wz-two-col {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.wz-option {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+  background: #fff;
+  border: 1px solid #e6e9f0;
+  border-radius: 14px;
+  padding: 16px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.wz-option:hover {
+  border-color: var(--lilac);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(24, 30, 75, 0.08);
+}
+
+.wz-option.selected {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 2px rgba(24, 30, 75, 0.12);
+}
+
+.wz-option-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.wz-option-title {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--ink-2);
+}
+
+.wz-option-text {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--body);
+}
+
+.wz-option-meta {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.wz-option-price {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.wz-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.wz-chip {
+  border: 1px solid #e6e9f0;
+  background: #fff;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.wz-chip:hover {
+  border-color: var(--lilac);
+}
+
+.wz-chip.selected {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: #fff;
+}
+
+/* ---- journey media gallery (principal image + extra photos) ---- */
+
+.gallery {
+  margin-bottom: 20px;
+}
+
+.gallery-open {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.gallery-open img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  display: block;
+}
+
+.gallery-count {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  background: rgba(24, 30, 75, 0.78);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.gallery-empty {
+  border-radius: 20px;
+  min-height: 240px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 56px;
+}
+
+.gallery-thumbs {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+}
+
+.gallery-thumb {
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  overflow: hidden;
+  background: none;
+  cursor: pointer;
+  display: block;
+}
+
+.gallery-thumb img {
+  width: 96px;
+  height: 66px;
+  object-fit: cover;
+  display: block;
+}
+
+.gallery-thumb:hover,
+.gallery-thumb.active {
+  border-color: var(--ink);
+}
+
+.gallery-lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 18, 40, 0.88);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  z-index: 50;
+  cursor: zoom-out;
+}
+
+.gallery-lightbox-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  cursor: default;
+}
+
+.gallery-lightbox-inner img {
+  max-width: min(1100px, 92vw);
+  max-height: 78vh;
+  object-fit: contain;
+  border-radius: 16px;
+}
+
+.gallery-lightbox-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  font-size: 14px;
+}
+
+.gallery-lightbox-bar button {
+  background: #fff;
+  border: 0;
+  border-radius: var(--radius);
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.gallery-lightbox-bar button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ---- wizard pricing ---- */
+
+.wz-pricing {
+  border: 1px solid var(--hairline);
+  border-radius: 16px;
+  padding: 16px;
+  background: #fbfbfd;
+}
+
+.wz-lines {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.wz-lines li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.wz-line-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wz-line-label strong {
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+.wz-line-label em {
+  font-style: normal;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.wz-total-row {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px dashed var(--hairline);
+  padding-top: 12px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.wz-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.wz-pay-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 20px 0 12px;
+}
+
 /* ---- footer ---- */
 
 .site-footer {
@@ -745,6 +1155,10 @@ table.bookings .ref {
   .hero-inner,
   .detail-grid {
     grid-template-columns: 1fr;
+  }
+
+  .wz-step {
+    flex: 0 0 150px;
   }
 
   .site-footer .cols {

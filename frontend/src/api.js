@@ -64,6 +64,14 @@ export const api = {
   booking: (id) => request(`/bookings/${id}`),
   pay: (id, simulate = 'success') => request(`/bookings/${id}/pay`, { method: 'POST', body: { simulate } }),
 
+  // Reservations (multi-type wizard: PERSONAL | GROUP | CUSTOM)
+  reservationCatalog: () => request('/reservations/catalog'),
+  quoteReservation: (payload) => request('/reservations/quote', { method: 'POST', body: payload }),
+  createReservation: (payload) => request('/reservations', { method: 'POST', body: payload }),
+  reservation: (id) => request(`/reservations/${id}`),
+  payReservation: (id, simulate = 'success') =>
+    request(`/reservations/${id}/pay`, { method: 'POST', body: { simulate } }),
+
   // Admin
   adminStats: () => request('/admin/dashboard/stats'),
   adminUsers: () => request('/admin/users'),

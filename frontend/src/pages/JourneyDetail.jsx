@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { api, formatDate, formatPrice } from '../api'
 import { useAuth } from '../auth'
-import { thumbStyle } from './shared'
+import MediaGallery from '../components/MediaGallery'
 
 export default function JourneyDetail() {
   const { id } = useParams()
@@ -49,16 +49,12 @@ export default function JourneyDetail() {
         </p>
         <div className="detail-grid">
           <article>
-            <div
-              className="detail-hero"
-              style={journey.imageUrl ? undefined : { background: thumbStyle(journey.id) }}
-            >
-              {journey.imageUrl ? (
-                <img src={journey.imageUrl} alt={journey.title} />
-              ) : (
-                (journey.destination || journey.title)[0]
-              )}
-            </div>
+            <MediaGallery
+              images={journey.images}
+              title={journey.title}
+              destination={journey.destination}
+              fallbackIndex={journey.id}
+            />
             <div className="meta" style={{ display: 'flex', gap: 10, marginBottom: 10 }}>
               <span className={`badge ${journey.isGroup ? 'blue' : 'green'}`}>
                 {journey.isGroup ? 'Group Journey' : 'Individual Journey'}

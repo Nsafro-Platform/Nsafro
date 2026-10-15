@@ -10,6 +10,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Profile from './pages/Profile'
 import Book from './pages/Book'
+import Reserve from './pages/Reserve'
 import Payment from './pages/Payment'
 import MyBookings from './pages/MyBookings'
 import AdminDashboard from './pages/AdminDashboard'
@@ -52,6 +53,14 @@ createRoot(document.getElementById('root')).render(
               element={
                 <RequireAuth>
                   <Book />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="reserve"
+              element={
+                <RequireAuth>
+                  <Reserve />
                 </RequireAuth>
               }
             />

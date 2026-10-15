@@ -29,6 +29,11 @@ export default function Layout() {
               Journeys
             </NavLink>
             {user && (
+              <NavLink to="/reserve" className={navLinkClass}>
+                Reserve
+              </NavLink>
+            )}
+            {user && (
               <NavLink to="/bookings" className={navLinkClass}>
                 My bookings
               </NavLink>
