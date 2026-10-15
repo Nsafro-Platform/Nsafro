@@ -9,6 +9,7 @@ import { journeysRouter } from './routes/journeys.js';
 import { bookingsRouter } from './routes/bookings.js';
 import { optionsRouter } from './routes/options.js';
 import { itinerariesRouter } from './routes/itineraries.js';
+import { reservationsRouter } from './routes/reservations.js';
 import { adminRouter } from './routes/admin.js';
 
 export function createApp() {
@@ -25,6 +26,7 @@ export function createApp() {
   app.use('/api/options', optionsRouter);
   app.use('/api/itineraries', itinerariesRouter);
   app.use('/api/bookings', bookingsRouter); // includes /api/bookings/admin/all
+  app.use('/api/reservations', reservationsRouter);
   app.use('/api/admin', adminRouter);
 
   // Consistent 404 for unknown API routes.

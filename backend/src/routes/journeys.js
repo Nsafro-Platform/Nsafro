@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { pool } from '../db/pool.js';
+import { JOURNEY_IMAGES_SQL, journeyImages } from '../db/journeyGallery.js';
 import { requireAdmin, loadUser } from '../middleware/auth.js';
 import {
   badRequest, notFound, conflict, asyncHandler,
@@ -32,6 +33,8 @@ function journeyToJson(row) {
     transport: row.transport,
     accommodation: row.accommodation,
     imageUrl: row.image_url,
+    // Principal image first, then the extra gallery photos.
+    images: journeyImages(row),
     isGroup: row.is_group,
     program: row.program,
     status: row.status,
@@ -151,7 +154,8 @@ journeysRouter.get(
     const totalPages = Math.max(Math.ceil(total / limit), 1);
 
     const { rows } = await pool.query(
-      `SELECT * FROM journeys ${where} ORDER BY ${orderBy} LIMIT ${limit} OFFSET ${(page - 1) * limit}`,
+      `SELECT j.*, ${JOURNEY_IMAGES_SQL} FROM journeys j ${where}
+       ORDER BY ${orderBy} LIMIT ${limit} OFFSET ${(page - 1) * limit}`,
       params
     );
     res.json({ journeys: rows.map(journeyToJson), page, limit, total, totalPages });
@@ -164,7 +168,10 @@ journeysRouter.get(
   asyncHandler(async (req, res) => {
     const id = Number(req.params.id);
     if (!Number.isInteger(id)) throw badRequest('Invalid journey id');
-    const { rows } = await pool.query('SELECT * FROM journeys WHERE id = $1', [id]);
+    const { rows } = await pool.query(
+      `SELECT j.*, ${JOURNEY_IMAGES_SQL} FROM journeys j WHERE j.id = $1`,
+      [id]
+    );
     const journey = rows[0];
     if (!journey) throw notFound('Journey not found');
     const user = await loadUser(req);
@@ -237,7 +244,10 @@ journeysRouter.patch(
           [id, ...values]
         );
       }
-      const { rows: after } = await client.query('SELECT * FROM journeys WHERE id = $1', [id]);
+      const { rows: after } = await client.query(
+        `SELECT j.*, ${JOURNEY_IMAGES_SQL} FROM journeys j WHERE j.id = $1`,
+        [id]
+      );
       await client.query('COMMIT');
       res.json({ journey: journeyToJson(after[0]) });
     } catch (err) {

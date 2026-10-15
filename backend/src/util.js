@@ -38,12 +38,20 @@ export function centsToDecimalString(cents) {
   return (cents / 100).toFixed(2);
 }
 
-export function newBookingReference() {
+function randomReferenceBody() {
   const alphabet = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
   const bytes = crypto.randomBytes(8);
   let ref = '';
   for (const b of bytes) ref += alphabet[b % alphabet.length];
-  return `JRN-${ref}`;
+  return ref;
+}
+
+export function newBookingReference() {
+  return `JRN-${randomReferenceBody()}`;
+}
+
+export function newReservationReference() {
+  return `RSV-${randomReferenceBody()}`;
 }
 
 export function asyncHandler(fn) {
