@@ -1,0 +1,146 @@
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { AuthProvider, useAuth } from './auth'
+import Layout from './components/Layout'
+import Home from './pages/Home'
+import Journeys from './pages/Journeys'
+import JourneyDetail from './pages/JourneyDetail'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import Profile from './pages/Profile'
+import Book from './pages/Book'
+import Payment from './pages/Payment'
+import MyBookings from './pages/MyBookings'
+import AdminDashboard from './pages/AdminDashboard'
+import AdminUsers from './pages/AdminUsers'
+import AdminBookings from './pages/AdminBookings'
+import AdminJourneys from './pages/AdminJourneys'
+import AdminOptions from './pages/AdminOptions'
+import AdminDestinations from './pages/AdminDestinations'
+import AdminQuotes from './pages/AdminQuotes'
+import './index.css'
+
+function RequireAuth({ children }) {
+  const { user, ready } = useAuth()
+  const location = useLocation()
+  if (!ready) return <p className="page-status">Loading…</p>
+  if (!user) return <Navigate to="/login" state={{ from: location.pathname }} replace />
+  return children
+}
+
+function RequireAdmin({ children }) {
+  const { user, ready, isAdmin } = useAuth()
+  const location = useLocation()
+  if (!ready) return <p className="page-status">Loading…</p>
+  if (!user) return <Navigate to="/login" state={{ from: location.pathname }} replace />
+  if (!isAdmin) return <Navigate to="/" replace />
+  return children
+}
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="journeys" element={<Journeys />} />
+            <Route path="journeys/:id" element={<JourneyDetail />} />
+            <Route
+              path="journeys/:id/book"
+              element={
+                <RequireAuth>
+                  <Book />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="bookings"
+              element={
+                <RequireAuth>
+                  <MyBookings />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="bookings/:id/pay"
+              element={
+                <RequireAuth>
+                  <Payment />
+                </RequireAuth>
+              }
+            />
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+            <Route
+              path="profile"
+              element={
+                <RequireAuth>
+                  <Profile />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="admin"
+              element={
+                <RequireAdmin>
+                  <AdminDashboard />
+                </RequireAdmin>
+              }
+            />
+            <Route
+              path="admin/users"
+              element={
+                <RequireAdmin>
+                  <AdminUsers />
+                </RequireAdmin>
+              }
+            />
+            <Route
+              path="admin/bookings"
+              element={
+                <RequireAdmin>
+                  <AdminBookings />
+                </RequireAdmin>
+              }
+            />
+            <Route
+              path="admin/journeys"
+              element={
+                <RequireAdmin>
+                  <AdminJourneys />
+                </RequireAdmin>
+              }
+            />
+            <Route
+              path="admin/options"
+              element={
+                <RequireAdmin>
+                  <AdminOptions />
+                </RequireAdmin>
+              }
+            />
+            <Route
+              path="admin/destinations"
+              element={
+                <RequireAdmin>
+                  <AdminDestinations />
+                </RequireAdmin>
+              }
+            />
+            <Route
+              path="admin/quotes"
+              element={
+                <RequireAdmin>
+                  <AdminQuotes />
+                </RequireAdmin>
+              }
+            />
+            <Route path="*" element={<p className="page-status">Page not found</p>} />
+          </Route>
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
+  </StrictMode>,
+)
