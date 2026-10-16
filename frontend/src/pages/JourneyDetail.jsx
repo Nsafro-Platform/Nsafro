@@ -55,7 +55,7 @@ export default function JourneyDetail() {
               destination={journey.destination}
               fallbackIndex={journey.id}
             />
-            <div className="meta" style={{ display: 'flex', gap: 10, marginBottom: 10 }}>
+            <div className="meta" style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 10 }}>
               <span className={`badge ${journey.isGroup ? 'blue' : 'green'}`}>
                 {journey.isGroup ? 'Group Journey' : 'Individual Journey'}
               </span>
