@@ -35,19 +35,20 @@ export default function AdminUsers() {
       <div className="container">
         <h1>Users</h1>
         {error && <p className="alert alert-error">{error}</p>}
-        <div className="card" style={{ marginTop: '1rem' }}>
-          <table style={{ width: '100%' }}>
+        <div className="table-wrap" style={{ marginTop: '1rem' }}>
+          <table className="bookings">
             <thead>
               <tr><th>Name</th><th>Email</th><th>Role</th><th>Actions</th></tr>
             </thead>
             <tbody>
+              {/* data-label feeds the stacked card headings shown on phones. */}
               {users.map(u => (
                 <tr key={u.id}>
-                  <td>{u.fullName}</td>
-                  <td>{u.email}</td>
-                  <td>{u.role}</td>
-                  <td>
-                    <select disabled={busy} value={u.role} onChange={(e) => updateRole(u.id, e.target.value)}>
+                  <td data-label="Name">{u.fullName}</td>
+                  <td data-label="Email">{u.email}</td>
+                  <td data-label="Role">{u.role}</td>
+                  <td data-label="Actions">
+                    <select disabled={busy} value={u.role} onChange={(e) => updateRole(u.id, e.target.value)} aria-label={`Role for ${u.email}`}>
                       <option value="user">user</option>
                       <option value="admin">admin</option>
                     </select>

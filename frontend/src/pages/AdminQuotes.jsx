@@ -48,13 +48,12 @@ export default function AdminQuotes() {
                 placeholder="Agent note..."
                 value={notes[q.id]?.agentNote || q.agentNote || ''}
                 onChange={(e) => setNotes(n => ({ ...n, [q.id]: { ...n[q.id], agentNote: e.target.value } }))}
-                style={{ width: '100%', minHeight: 80 }}
               />
-              <div style={{ marginTop: 10 }}>
-                <select value={notes[q.id]?.status || q.status} onChange={(e) => setNotes(n => ({ ...n, [q.id]: { ...n[q.id], status: e.target.value } }))}>
+              <div className="form-row">
+                <select value={notes[q.id]?.status || q.status} onChange={(e) => setNotes(n => ({ ...n, [q.id]: { ...n[q.id], status: e.target.value } }))} aria-label="Quote status">
                   {STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
-                <button disabled={busy} className="btn btn-primary" style={{ marginLeft: 10 }} onClick={() => update(q.id)}>Update</button>
+                <button disabled={busy} className="btn btn-primary" onClick={() => update(q.id)}>Update</button>
               </div>
             </div>
           ))}

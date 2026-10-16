@@ -50,19 +50,22 @@ export default function MyBookings() {
                 </tr>
               </thead>
               <tbody>
+                {/* data-label feeds the stacked card headings shown on phones. */}
                 {bookings.map((booking) => (
                   <tr key={booking.id}>
-                    <td className="ref">{booking.reference}</td>
-                    <td>
+                    <td className="ref" data-label="Reference">
+                      {booking.reference}
+                    </td>
+                    <td data-label="Journey">
                       <Link to={`/journeys/${booking.journeyId}`}>{booking.journey?.title}</Link>
                     </td>
-                    <td>{formatDate(booking.journey?.startDate)}</td>
-                    <td>{booking.travellersCount}</td>
-                    <td>{formatPrice(booking.totalPrice)}</td>
-                    <td>{paymentBadge(booking)}</td>
-                    <td>
+                    <td data-label="Departure">{formatDate(booking.journey?.startDate)}</td>
+                    <td data-label="Travellers">{booking.travellersCount}</td>
+                    <td data-label="Total">{formatPrice(booking.totalPrice)}</td>
+                    <td data-label="Status">{paymentBadge(booking)}</td>
+                    <td data-label="">
                       {booking.paymentStatus !== 'paid' && booking.status !== 'cancelled' && (
-                        <Link to={`/bookings/${booking.id}/pay`} className="btn btn-primary" style={{ padding: '8px 16px' }}>
+                        <Link to={`/bookings/${booking.id}/pay`} className="btn btn-sm btn-primary">
                           Pay
                         </Link>
                       )}

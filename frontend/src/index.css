@@ -139,6 +139,12 @@ textarea {
   border: 1px solid var(--orange);
 }
 
+/* Compact button for use inside table rows. */
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
 /* ---- forms ---- */
 
 .field {
@@ -216,6 +222,7 @@ textarea {
 }
 
 .site-header .container {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -241,18 +248,6 @@ textarea {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-@media (max-width: 600px) {
-  .logo {
-    font-size: 32px;
-  }
-
-  .logo-img {
-    width: 34px;
-    height: 34px;
-    border-radius: 9px;
-  }
-}
-
 .site-nav {
   display: flex;
   align-items: center;
@@ -273,6 +268,33 @@ textarea {
 .site-nav .user-chip {
   color: var(--muted);
   font-size: 14px;
+}
+
+/* Menu button for the collapsed navigation: hidden on wide viewports, where
+   the full navigation is always visible. */
+.nav-toggle {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 9px 14px;
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nav-toggle:hover {
+  border-color: var(--purple);
+  color: var(--purple);
+}
+
+.nav-toggle-icon {
+  font-size: 16px;
+  line-height: 1;
 }
 
 /* ---- hero ---- */
@@ -1105,6 +1127,81 @@ table.bookings .ref {
   margin: 20px 0 12px;
 }
 
+/* ---- admin panels ---- */
+
+/* Panel surface shared by the admin sections and the dashboard tiles. */
+.card {
+  background: #fff;
+  border: 1px solid var(--hairline);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: var(--card-shadow);
+}
+
+.card h3 {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 17px;
+  color: var(--ink-2);
+  margin: 0 0 12px;
+}
+
+/* Two-field admin form layout; it collapses to one column on phones. */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.form-row > label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* The compact admin forms use bare controls, so they get the same treatment
+   as .field inputs. */
+.card input:not([type='checkbox']):not([type='radio']),
+.card select,
+.card textarea {
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  padding: 11px 16px;
+  font-size: 15px;
+  background: #fff;
+}
+
+.card input[type='checkbox'] {
+  width: auto;
+}
+
+.card textarea {
+  width: 100%;
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* Controls inside the data tables stay compact. */
+table.bookings select {
+  width: auto;
+  min-width: 120px;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+/* Action groups inside a table cell sit flush with the cell, not the form. */
+table .form-row {
+  margin-top: 0;
+}
+
 /* ---- footer ---- */
 
 .site-footer {
@@ -1151,10 +1248,73 @@ table.bookings .ref {
 
 /* ---- responsive ---- */
 
+/* Four bands drive the adaptation. Everything above 1000px is the original
+   desktop layout.
+   ≤1000px phones and tablets in portrait — the navigation collapses behind a
+           menu button.
+   ≤900px  single-column layouts: hero, detail + booking aside, footer.
+   ≤700px  wide data tables become stacked, labelled cards so no page needs
+           sideways scrolling.
+   ≤600px  phone refinements: tighter spacing, full-width actions, 16px inputs. */
+
+@media (max-width: 1000px) {
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  /* The panel drops below the header instead of wrapping into the bar. */
+  .site-nav {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 0;
+    right: 0;
+    z-index: 40;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    padding: 12px;
+    background: #fff;
+    border: 1px solid var(--hairline);
+    border-radius: 18px;
+    box-shadow: var(--card-shadow);
+  }
+
+  .site-nav.open {
+    display: flex;
+  }
+
+  /* Every entry becomes a full-width touch target of at least 44px. */
+  .site-nav a,
+  .site-nav .btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    font-size: 15px;
+  }
+
+  .site-nav a:hover,
+  .site-nav a.active {
+    background: #f6f6fb;
+  }
+}
+
 @media (max-width: 900px) {
   .hero-inner,
   .detail-grid {
     grid-template-columns: 1fr;
+  }
+
+  .section {
+    padding: 52px 0;
+  }
+
+  .hero h1 {
+    font-size: clamp(36px, 8vw, 56px);
   }
 
   .wz-step {
@@ -1170,20 +1330,269 @@ table.bookings .ref {
   }
 }
 
+/* Data tables collapse into one labelled card per row, so the booking and admin
+   lists stay readable on a phone without horizontal scrolling. */
+@media (max-width: 700px) {
+  .table-wrap {
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  table.bookings {
+    display: block;
+    min-width: 0;
+  }
+
+  /* Column headers stay available to assistive tech but leave the screen. */
+  table.bookings thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  table.bookings tbody,
+  table.bookings tr,
+  table.bookings td {
+    display: block;
+    width: 100%;
+  }
+
+  table.bookings tr {
+    margin-bottom: 16px;
+    border: 1px solid var(--hairline);
+    border-radius: 16px;
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    background: #fff;
+  }
+
+  table.bookings tr:last-child {
+    margin-bottom: 0;
+  }
+
+  table.bookings td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 12px 16px;
+    text-align: right;
+    border-bottom: 1px solid #f1f1f5;
+  }
+
+  table.bookings tr td:last-child {
+    border-bottom: 0;
+  }
+
+  table.bookings td::before {
+    content: attr(data-label);
+    flex: 0 0 auto;
+    font-weight: 600;
+    color: var(--ink-2);
+    text-align: left;
+  }
+
+  /* Action columns own the whole row instead of sitting opposite a label. */
+  table.bookings td[data-label='Actions'],
+  table.bookings td[data-label=''] {
+    display: block;
+    text-align: left;
+  }
+
+  table.bookings td[data-label='']::before {
+    content: none;
+  }
+
+  table.bookings td .btn {
+    width: 100%;
+  }
+
+  table.bookings select {
+    flex: 1 1 130px;
+    min-width: 0;
+  }
+
+  /* Admin forms go single-column and full-width on phones. */
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card input:not([type='checkbox']):not([type='radio']),
+  .card select,
+  .card textarea {
+    width: 100%;
+  }
+}
+
 @media (max-width: 600px) {
-  .site-nav {
-    gap: 20px;
+  .container {
+    width: min(1130px, 100% - 32px);
+  }
+
+  .section {
+    padding: 40px 0;
+  }
+
+  .section-head {
+    margin-bottom: 28px;
+  }
+
+  .subheading {
+    font-size: 15px;
+  }
+
+  .page-title {
+    font-size: 28px;
+  }
+
+  .site-header {
+    padding: 14px 0;
   }
 
   .logo {
-    font-size: 32px;
+    font-size: 28px;
+  }
+
+  .logo-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+  }
+
+  .hero {
+    padding: 24px 0 40px;
+  }
+
+  .hero-art,
+  .hero-art img {
+    border-radius: 0 0 64px;
+  }
+
+  .hero-art {
+    min-height: 200px;
+  }
+
+  /* 16px controls stop mobile Safari from zooming in when a field is focused. */
+  .field input,
+  .field select,
+  .card input:not([type='checkbox']):not([type='radio']),
+  .card select,
+  .card textarea {
+    font-size: 16px;
+  }
+
+  .filters {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .filters .field,
+  .filters .field.grow,
+  .filters .field.actions {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  .filters .field.actions .btn {
+    width: 100%;
+  }
+
+  .form-card,
+  .confirm-box,
+  .wz-panel,
+  .booking-card,
+  .card {
+    padding: 18px;
+  }
+
+  .booking-card .price-line {
+    font-size: 22px;
+  }
+
+  .confirm-box .ref {
+    font-size: 19px;
+    letter-spacing: 0.08em;
+    word-break: break-word;
+  }
+
+  .info-list li {
+    flex-wrap: wrap;
+  }
+
+  .gallery-open img {
+    height: 210px;
+  }
+
+  .gallery-thumb img {
+    width: 76px;
+    height: 54px;
+  }
+
+  .gallery-lightbox {
+    padding: 12px;
+  }
+
+  .gallery-lightbox-inner {
+    gap: 10px;
+  }
+
+  .gallery-lightbox-inner img {
+    max-height: 66vh;
+    border-radius: 12px;
+  }
+
+  .gallery-lightbox-bar {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .wz-track {
+    padding: 10px;
+    border-radius: 16px;
+  }
+
+  .wz-rail {
+    scroll-snap-type: x mandatory;
+  }
+
+  .wz-step {
+    flex: 0 0 140px;
+    min-width: 140px;
+    scroll-snap-align: start;
+  }
+
+  .wz-step-btn {
+    padding: 12px;
+  }
+
+  .wz-pay-actions,
+  .wz-nav {
+    flex-direction: column;
+  }
+
+  .wz-pay-actions .btn,
+  .wz-nav .btn {
+    width: 100%;
+  }
+
+  .site-footer {
+    margin-top: 40px;
+    padding: 40px 0 28px;
   }
 
   .site-footer .cols {
     grid-template-columns: 1fr;
+    gap: 28px;
   }
 
-  .table-wrap {
-    border: 0;
+  .site-footer .desc {
+    max-width: none;
   }
 }

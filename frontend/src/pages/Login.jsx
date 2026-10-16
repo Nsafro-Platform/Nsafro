@@ -61,10 +61,13 @@ export default function Login() {
           }
         },
       })
+      // Google's button needs a pixel width; fit it to the card so it never
+      // overflows on phones, while keeping the 340px desktop size.
+      const available = googleDivRef.current.clientWidth || 340
       window.google.accounts.id.renderButton(googleDivRef.current, {
         theme: 'outline',
         size: 'large',
-        width: 340,
+        width: Math.min(340, Math.max(200, Math.floor(available))),
         text: 'continue_with',
       })
     }
@@ -126,7 +129,7 @@ export default function Login() {
           {googleClientId && (
             <>
               <p className="hint" style={{ textAlign: 'center', margin: '16px 0 4px' }}>or</p>
-              <div ref={googleDivRef} style={{ display: 'flex', justifyContent: 'center' }} />
+              <div ref={googleDivRef} style={{ display: 'flex', justifyContent: 'center', maxWidth: '100%' }} />
             </>
           )}
           <p className="swap">
