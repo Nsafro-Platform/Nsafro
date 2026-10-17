@@ -1,0 +1,31 @@
+name: Enforce Branch Naming Convention
+
+on:
+  push:
+    branches-ignore:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-branch-name:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify branch name matches Jira pattern
+        run: |
+          # Extract the branch name whether it is a push or a pull request
+          BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
+          
+          # Define the flexible regex pattern to match */SCRUM-13-*
+          REGEX="^[a-zA-Z0-9_-]+/SCRUM-[0-9]+-.*$"
+          
+          # Check if the branch name matches the regex
+          if [[ ! $BRANCH_NAME =~ $REGEX ]]; then
+            echo "::error::Branch name '$BRANCH_NAME' is invalid."
+            echo "All branches must follow the pattern: <type>/SCRUM-<ticket-number>-<description>"
+            echo "Example: task/SCRUM-13-update-header"
+            exit 1
+          fi
+          echo "Branch name '$BRANCH_NAME' is valid!"
+          
