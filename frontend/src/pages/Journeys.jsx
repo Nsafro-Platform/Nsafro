@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../api'
 import { JourneyCard } from './shared'
+import { JourneyCardsSkeleton } from '../components/Loading'
 
 const INITIAL = {
   q: '',
@@ -126,7 +127,7 @@ export default function Journeys() {
         </form>
 
         {error && <p className="alert alert-error">{error}</p>}
-        {!error && !journeys && <p className="loading">Loading journeys…</p>}
+        {!error && !journeys && <JourneyCardsSkeleton count={PAGE_SIZE} />}
         {journeys && journeys.length === 0 && (
           <p className="empty-state">
             No journeys match these filters. Try <Link to="/journeys" onClick={() => { setPage(1); setFilters(INITIAL) }}>resetting</Link> them.
