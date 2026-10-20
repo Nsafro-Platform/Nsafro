@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { api, formatDate, formatPrice } from '../api'
 import { useAuth } from '../auth'
+import { PanelSkeleton } from '../components/Loading'
+
+const MAX_TRAVELLERS = 20
 
 export default function Book() {
   const { id } = useParams()
@@ -10,7 +13,6 @@ export default function Book() {
 
   const [journey, setJourney] = useState(null)
   const [loadError, setLoadError] = useState(null)
-  const [travellers, setTravellers] = useState(1)
   const [participantNames, setParticipantNames] = useState(user ? [user.fullName] : [''])
   const [formError, setFormError] = useState(null)
   const [busy, setBusy] = useState(false)
@@ -44,20 +46,30 @@ export default function Book() {
       </div>
     )
   }
-  if (!journey) return <p className="loading">Loading journey…</p>
+  if (!journey) {
+    return (
+      <section className="section">
+        <div className="container narrow">
+          <PanelSkeleton lines={5} label="Loading journey" />
+        </div>
+      </section>
+    )
+  }
 
+  // The participant list is the single source of truth for the traveller count,
+  // bounded by the seats the server says are still free.
+  const travellers = participantNames.length
+  const maxTravellers = Math.min(MAX_TRAVELLERS, journey.remainingSeats ?? journey.capacity)
+  const soldOut = maxTravellers < 1
   const estimate = Number(journey.price) * travellers
 
-  function setTravellerCount(next) {
-    const count = Math.max(1, Math.min(20, Number(next) || 1))
-    setTravellers(count)
-    setParticipantNames((prev) => {
-      const names = [...prev]
-      while (names.length < count) names.push('')
-      names.length = count
-      if (names[0] === '' && user) names[0] = user.fullName
-      return names
-    })
+  function addParticipant() {
+    setParticipantNames((prev) => (prev.length >= maxTravellers ? prev : [...prev, '']))
+  }
+
+  function removeParticipant(index) {
+    // The organizer keeps the first row; guests can be dropped while editing.
+    setParticipantNames((prev) => prev.filter((_, i) => i !== index))
   }
 
   function setParticipantName(index, value) {
@@ -68,11 +80,8 @@ export default function Book() {
     event.preventDefault()
     setFormError(null)
 
-    const participants = participantNames.map((fullName) => ({
-      fullName: fullName === user?.fullName ? user.fullName : fullName,
-    }))
-    for (const p of participants) {
-      if (!p.fullName || !p.fullName.trim()) {
+    for (const name of participantNames) {
+      if (!name || !name.trim()) {
         setFormError('Please enter the full name of every traveller.')
         return
       }
@@ -82,8 +91,8 @@ export default function Book() {
     try {
       const data = await api.createBooking({
         journeyId: Number(id),
-        travellersCount: travellers,
-        participants: participants.map((p) => ({ fullName: p.fullName.trim() })),
+        travellersCount: participantNames.length,
+        participants: participantNames.map((fullName) => ({ fullName: fullName.trim() })),
       })
       navigate(`/bookings/${data.booking.id}/pay`)
     } catch (err) {
@@ -106,44 +115,72 @@ export default function Book() {
             </p>
 
             {formError && <p className="alert alert-error">{formError}</p>}
+            {soldOut && (
+              <p className="alert alert-error">
+                This journey is fully booked — no seat left for this departure.
+              </p>
+            )}
 
             <form onSubmit={onSubmit}>
-              <div className="field">
-                <label htmlFor="book-travellers">Number of travellers</label>
-                <input
-                  id="book-travellers"
-                  type="number"
-                  min="1"
-                  max={Math.min(20, journey.capacity)}
-                  required
-                  value={travellers}
-                  onChange={(e) => setTravellerCount(e.target.value)}
-                />
-                <span className="hint">Journey capacity: {journey.capacity} travellers in total.</span>
+              <div className="participants-head">
+                <div>
+                  <h2 className="sub-title">Travellers</h2>
+                  <p className="hint">
+                    {travellers} of {maxTravellers} seat{maxTravellers === 1 ? '' : 's'} still
+                    available for this departure.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-outline"
+                  onClick={addParticipant}
+                  disabled={soldOut || travellers >= maxTravellers}
+                >
+                  + Add traveller
+                </button>
               </div>
 
-              <h2 style={{ fontSize: 24, margin: '18px 0 12px' }}>Traveller names</h2>
               {journey.isGroup ? (
-                <p className="hint" style={{ marginBottom: 16 }}>
+                <p className="hint mb-16">
                   This is an organized <strong>group journey</strong> — every participant is listed on
                   the booking.
                 </p>
               ) : null}
+
               {participantNames.map((name, i) => (
-                <div className="field" key={i}>
-                  <label htmlFor={`participant-${i}`}>Traveller {i + 1}</label>
-                  <input
-                    id={`participant-${i}`}
-                    type="text"
-                    required
-                    maxLength={200}
-                    value={name}
-                    onChange={(e) => setParticipantName(i, e.target.value)}
-                  />
+                <div className="participant-row" key={i}>
+                  <div className="field grow">
+                    <label htmlFor={`participant-${i}`}>
+                      Traveller {i + 1}
+                      {i === 0 ? ' (you)' : ''}
+                    </label>
+                    <input
+                      id={`participant-${i}`}
+                      type="text"
+                      required
+                      maxLength={200}
+                      value={name}
+                      onChange={(e) => setParticipantName(i, e.target.value)}
+                      readOnly={i === 0 && Boolean(user)}
+                    />
+                    <span className="hint">
+                      {i === 0 ? 'Organizer — confirmed on booking' : 'Guest — invitation pending'}
+                    </span>
+                  </div>
+                  {i > 0 && (
+                    <button
+                      type="button"
+                      className="btn btn-danger-outline"
+                      onClick={() => removeParticipant(i)}
+                      aria-label={`Remove traveller ${i + 1}`}
+                    >
+                      Remove
+                    </button>
+                  )}
                 </div>
               ))}
 
-              <button type="submit" className="btn btn-primary" disabled={busy}>
+              <button type="submit" className="btn btn-primary" disabled={busy || soldOut}>
                 {busy ? 'Creating booking…' : 'Continue to simulated payment'}
               </button>
             </form>
@@ -164,11 +201,15 @@ export default function Book() {
                 <span>{formatDate(journey.startDate)}</span>
               </li>
               <li>
+                <strong>Travellers</strong>
+                <span>{travellers}</span>
+              </li>
+              <li>
                 <strong>Booked by</strong>
                 <span>{user?.email}</span>
               </li>
             </ul>
-            <p className="hint" style={{ fontSize: 12, marginTop: 16 }}>
+            <p className="hint mt-16">
               The exact total is recalculated server-side from the offer price stored in the
               database. Payment is a simulation only — no real charge.
             </p>

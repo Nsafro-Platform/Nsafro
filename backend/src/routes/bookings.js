@@ -81,11 +81,16 @@ bookingsRouter.post(
       );
       const booking = bookingRows[0];
 
+      // The organizer is confirmed on the spot; the other travellers stay
+      // "invited" until they accept (invitations are tracked in SCRUM-27).
+      const payerName = req.user.fullName.trim().toLowerCase();
       for (const p of participants) {
-        await client.query('INSERT INTO participants (booking_id, full_name) VALUES ($1, $2)', [
-          booking.id,
-          p.fullName.trim(),
-        ]);
+        const fullName = p.fullName.trim();
+        const status = fullName.toLowerCase() === payerName ? 'confirmed' : 'invited';
+        await client.query(
+          'INSERT INTO participants (booking_id, full_name, status) VALUES ($1, $2, $3)',
+          [booking.id, fullName, status]
+        );
       }
 
       await client.query('COMMIT');
@@ -110,7 +115,11 @@ bookingsRouter.get(
   requireAuth,
   asyncHandler(async (req, res) => {
     const { rows } = await pool.query(
-      `SELECT b.*, j.title AS journey_title, j.destination AS journey_destination, j.start_date AS journey_start
+      `SELECT b.*, j.title AS journey_title, j.destination AS journey_destination, j.start_date AS journey_start,
+              COALESCE((
+                SELECT json_agg(json_build_object('id', p.id, 'fullName', p.full_name, 'status', p.status) ORDER BY p.id)
+                FROM participants p WHERE p.booking_id = b.id
+              ), '[]'::json) AS participants
        FROM bookings b JOIN journeys j ON j.id = b.journey_id
        WHERE b.user_id = $1 ORDER BY b.created_at DESC, b.id DESC`,
       [req.user.id]
@@ -124,6 +133,7 @@ bookingsRouter.get(
             destination: r.journey_destination,
             startDate: r.journey_start,
           },
+          participants: r.participants,
         })
       ),
     });
