@@ -54,10 +54,12 @@ coverage/
 tsbuildinfo
 
 # Project artifacts (for review cleanliness)
-test.css
-devision*.md
-images/
-voyage.jpg.jpeg
-home_page.png
-logo.png
+# Anchored to the repository root so they don't also match application assets
+# such as frontend/src/assets/logo.png, which the build needs.
+/test.css
+/devision*.md
+/images/
+/voyage.jpg.jpeg
+/home_page.png
+/logo.png
 
