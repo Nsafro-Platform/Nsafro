@@ -124,13 +124,15 @@ adminRouter.get('/bookings', requireAdmin, asyncHandler(async (_req, res) => {
     `SELECT b.*, j.title AS journey_title, u.email AS user_email, u.full_name AS user_name
      FROM bookings b JOIN journeys j ON j.id = b.journey_id JOIN users u ON u.id = b.user_id ORDER BY b.created_at DESC, b.id DESC`
   );
-  res.json({ bookings: rows.map(r => ({
-    id: r.id, reference: r.reference, journeyId: r.journey_id,
-    travellersCount: r.travellers_count, unitPrice: r.unit_price, totalPrice: r.total_price,
-    status: r.status, paymentStatus: r.payment_status, createdAt: r.created_at,
-    journey: { id: r.journey_id, title: r.journey_title },
-    user: { email: r.user_email, name: r.user_name },
-  })) });
+  res.json({
+    bookings: rows.map(r => ({
+      id: r.id, reference: r.reference, journeyId: r.journey_id,
+      travellersCount: r.travellers_count, unitPrice: r.unit_price, totalPrice: r.total_price,
+      status: r.status, paymentStatus: r.payment_status, createdAt: r.created_at,
+      journey: { id: r.journey_id, title: r.journey_title },
+      user: { email: r.user_email, name: r.user_name },
+    }))
+  });
 }));
 
 adminRouter.patch('/bookings/:id', requireAdmin, asyncHandler(async (req, res) => {

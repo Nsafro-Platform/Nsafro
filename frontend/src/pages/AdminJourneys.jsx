@@ -96,7 +96,7 @@ export default function AdminJourneys() {
         {error && <p className="alert alert-error">{error}</p>}
         <form onSubmit={save} className="card" style={{ marginTop: '1rem' }}>
           <h3>{editingId ? `Edit Journey #${editingId}` : 'Add Journey'}</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          <div className="form-grid">
             <input placeholder="Title" value={form.title} onChange={e => setField('title', e.target.value)} required />
             <input placeholder="Destination" value={form.destination} onChange={e => setField('destination', e.target.value)} required />
             <input placeholder="Summary" value={form.summary} onChange={e => setField('summary', e.target.value)} />
@@ -108,25 +108,29 @@ export default function AdminJourneys() {
             <input placeholder="Transport" value={form.transport} onChange={e => setField('transport', e.target.value)} />
             <input placeholder="Accommodation" value={form.accommodation} onChange={e => setField('accommodation', e.target.value)} />
           </div>
-          <textarea placeholder="Description" value={form.description} onChange={e => setField('description', e.target.value)} style={{ width: '100%', minHeight: 60, marginTop: 10 }} />
-          <textarea placeholder="Program" value={form.program} onChange={e => setField('program', e.target.value)} style={{ width: '100%', minHeight: 60, marginTop: 10 }} />
-          <div style={{ marginTop: 10 }}>
+          <textarea placeholder="Description" value={form.description} onChange={e => setField('description', e.target.value)} style={{ marginTop: 10 }} />
+          <textarea placeholder="Program" value={form.program} onChange={e => setField('program', e.target.value)} style={{ marginTop: 10 }} />
+          <div className="form-row">
             <label><input type="checkbox" checked={form.is_group} onChange={e => setField('is_group', e.target.checked)} /> Group journey</label>
-            <select value={form.status} onChange={e => setField('status', e.target.value)} style={{ marginLeft: 10 }}>
+            <select value={form.status} onChange={e => setField('status', e.target.value)}>
               <option value="draft">draft</option>
               <option value="published">published</option>
               <option value="archived">archived</option>
             </select>
-            <button disabled={busy} className="btn btn-primary" style={{ marginLeft: 10 }}>{editingId ? 'Update' : 'Create'}</button>
-            {editingId && <button type="button" className="btn btn-outline" style={{ marginLeft: 10 }} onClick={() => { setEditingId(null); setForm(INITIAL) }}>Cancel</button>}
+            <button disabled={busy} className="btn btn-primary">{editingId ? 'Update' : 'Create'}</button>
+            {editingId && <button type="button" className="btn btn-outline" onClick={() => { setEditingId(null); setForm(INITIAL) }}>Cancel</button>}
           </div>
         </form>
         <div style={{ marginTop: '1rem' }}>
           {journeys.map(j => (
-            <div key={j.id} className="card" style={{ marginBottom: 10 }}>
-              <strong>{j.title}</strong> ({j.destination}) - {j.status} - MAD {j.price}
-              <button disabled={busy} className="btn btn-outline" style={{ marginLeft: 10 }} onClick={() => edit(j)}>Edit</button>
-              <button disabled={busy} className="btn btn-outline" style={{ marginLeft: 10 }} onClick={() => del(j.id)}>Archive</button>
+            <div key={j.id} className="card" style={{ marginBottom: 12 }}>
+              <p style={{ margin: '0 0 10px' }}>
+                <strong>{j.title}</strong> ({j.destination}) - {j.status} - MAD {j.price}
+              </p>
+              <div className="form-row" style={{ marginTop: 0 }}>
+                <button disabled={busy} className="btn btn-outline" onClick={() => edit(j)}>Edit</button>
+                <button disabled={busy} className="btn btn-outline" onClick={() => del(j.id)}>Archive</button>
+              </div>
             </div>
           ))}
         </div>
