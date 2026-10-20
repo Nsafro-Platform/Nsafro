@@ -373,6 +373,31 @@ reservationsRouter.post(
   })
 );
 
+// GET /api/reservations — the signed-in user's reservation history (every flow).
+// The list merges into the My bookings page next to classic bookings.
+reservationsRouter.get(
+  '/',
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const { rows } = await pool.query(
+      `SELECT r.*, j.title AS journey_title, j.start_date AS journey_start
+       FROM reservations r LEFT JOIN journeys j ON j.id = r.journey_id
+       WHERE r.user_id = $1 ORDER BY r.created_at DESC, r.id DESC`,
+      [req.user.id]
+    );
+    res.json({
+      reservations: rows.map((r) =>
+        reservationToJson(r, {
+          // CUSTOM reservations have no journey; the wizard summary stays in selected_options.
+          journey: r.journey_id
+            ? { id: r.journey_id, title: r.journey_title, startDate: r.journey_start }
+            : null,
+        })
+      ),
+    });
+  })
+);
+
 // POST /api/reservations — store a validated reservation (still unpaid).
 reservationsRouter.post(
   '/',
