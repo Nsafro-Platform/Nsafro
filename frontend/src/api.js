@@ -47,7 +47,8 @@ export const api = {
   logout: () => request('/auth/logout', { method: 'POST' }),
   me: () => request('/auth/me'),
 
-  // Journeys (paginated: page, limit; filters: q, destination, maxPrice, group, sort)
+  // Journeys (paginated: page, limit; filters: q, destination, minPrice, maxPrice,
+  // from, to, group, available, sort)
   journeys: (params = {}) => {
     const qs = new URLSearchParams()
     for (const [key, value] of Object.entries(params)) {
