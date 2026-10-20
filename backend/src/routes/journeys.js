@@ -143,6 +143,26 @@ journeysRouter.get(
       params.push(maxPrice);
       conditions.push(`price <= ${`$${params.length}`}`);
     }
+    const minPrice = Number(req.query.minPrice);
+    if (Number.isFinite(minPrice) && minPrice >= 0) {
+      params.push(minPrice);
+      conditions.push(`price >= ${`$${params.length}`}`);
+    }
+
+    // Departure window: both bounds are inclusive and filtered on start_date.
+    // A malformed date is a client error rather than a silently ignored filter.
+    for (const [field, column, operator] of [
+      ['from', 'start_date', '>='],
+      ['to', 'start_date', '<='],
+    ]) {
+      if (req.query[field] === undefined || req.query[field] === '') continue;
+      if (!isIsoDate(req.query[field])) throw badRequest(`${field} must be a YYYY-MM-DD date`);
+      params.push(req.query[field]);
+      conditions.push(`${column} ${operator} $${params.length}`);
+    }
+    if (req.query.from && req.query.to && req.query.from > req.query.to) {
+      throw badRequest('from must be on or before to');
+    }
     if (req.query.group === 'true') conditions.push('is_group = TRUE');
     if (req.query.group === 'false') conditions.push('is_group = FALSE');
     // Only offers that still have at least one free seat.
