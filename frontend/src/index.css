@@ -1055,6 +1055,11 @@ table.bookings td {
   border-bottom: 1px solid #f1f1f5;
 }
 
+/* Row actions can be stacked (modify + pay, ticket). */
+table.bookings td .btn + .btn {
+  margin-left: 8px;
+}
+
 table.bookings th {
   background: #fafaff;
   color: var(--muted);

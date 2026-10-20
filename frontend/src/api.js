@@ -63,6 +63,7 @@ export const api = {
   createBooking: (payload) => request('/bookings', { method: 'POST', body: payload }),
   myBookings: () => request('/bookings'),
   booking: (id) => request(`/bookings/${id}`),
+  updateBooking: (id, payload) => request(`/bookings/${id}`, { method: 'PATCH', body: payload }),
   pay: (id, simulate = 'success') => request(`/bookings/${id}/pay`, { method: 'POST', body: { simulate } }),
 
   // Reservations (multi-type wizard: PERSONAL | GROUP | CUSTOM)

@@ -14,6 +14,7 @@ import Reserve from './pages/Reserve'
 import Payment from './pages/Payment'
 import MyBookings from './pages/MyBookings'
 import ETicket from './pages/ETicket'
+import EditBooking from './pages/EditBooking'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminUsers from './pages/AdminUsers'
 import AdminBookings from './pages/AdminBookings'
@@ -94,6 +95,14 @@ createRoot(document.getElementById('root')).render(
               element={
                 <RequireAuth>
                   <ETicket />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="bookings/:id/edit"
+              element={
+                <RequireAuth>
+                  <EditBooking />
                 </RequireAuth>
               }
             />

@@ -140,6 +140,42 @@ bookingsRouter.get(
   })
 );
 
+// Booking detail shared by the confirmation, the e-ticket and the edit screen:
+// journey snapshot, live availability and the participant manifest.
+async function loadBookingDetail(db, id) {
+  const { rows } = await db.query(
+    `SELECT b.*, j.title AS journey_title, j.destination AS journey_destination,
+            j.start_date AS journey_start, j.end_date AS journey_end,
+            j.duration_days AS journey_duration, j.transport AS journey_transport,
+            j.capacity AS journey_capacity,
+            COALESCE((SELECT SUM(b2.travellers_count) FROM bookings b2
+                      WHERE b2.journey_id = b.journey_id AND b2.status IN ('pending', 'confirmed')), 0)
+              AS journey_booked
+     FROM bookings b JOIN journeys j ON j.id = b.journey_id WHERE b.id = $1`,
+    [id]
+  );
+  const booking = rows[0];
+  if (!booking) return null;
+  return {
+    ownerId: booking.user_id,
+    booking: bookingToJson(booking, {
+      journey: {
+        id: booking.journey_id,
+        title: booking.journey_title,
+        destination: booking.journey_destination,
+        startDate: booking.journey_start,
+        endDate: booking.journey_end,
+        durationDays: booking.journey_duration,
+        transport: booking.journey_transport,
+        capacity: booking.journey_capacity,
+        // Seats taken by every booking, including this one.
+        remainingSeats: Math.max(Number(booking.journey_capacity) - Number(booking.journey_booked), 0),
+      },
+      participants: await loadParticipants(db, booking.id),
+    }),
+  };
+}
+
 // GET /api/bookings/:id — owner or admin only.
 bookingsRouter.get(
   '/:id',
@@ -147,31 +183,111 @@ bookingsRouter.get(
   asyncHandler(async (req, res) => {
     const id = Number(req.params.id);
     if (!Number.isInteger(id)) throw badRequest('Invalid booking id');
-    const { rows } = await pool.query(
-      `SELECT b.*, j.title AS journey_title, j.destination AS journey_destination,
-              j.start_date AS journey_start, j.end_date AS journey_end,
-              j.duration_days AS journey_duration, j.transport AS journey_transport
-       FROM bookings b JOIN journeys j ON j.id = b.journey_id WHERE b.id = $1`,
-      [id]
-    );
-    const booking = rows[0];
-    if (!booking) throw notFound('Booking not found');
-    if (booking.user_id !== req.user.id && req.user.role !== 'admin') throw forbidden('Not your booking');
-    res.json({
-      booking: bookingToJson(booking, {
-        // Journey snapshot for the confirmation and e-ticket screens.
-        journey: {
-          id: booking.journey_id,
-          title: booking.journey_title,
-          destination: booking.journey_destination,
-          startDate: booking.journey_start,
-          endDate: booking.journey_end,
-          durationDays: booking.journey_duration,
-          transport: booking.journey_transport,
-        },
-        participants: await loadParticipants(pool, booking.id),
-      }),
-    });
+    const detail = await loadBookingDetail(pool, id);
+    if (!detail) throw notFound('Booking not found');
+    if (detail.ownerId !== req.user.id && req.user.role !== 'admin') throw forbidden('Not your booking');
+    res.json({ booking: detail.booking });
+  })
+);
+
+// PATCH /api/bookings/:id — the traveller changes an unpaid booking: traveller
+// count and/or the participant names. Price stays the unit price snapshotted at
+// creation, capacity is re-checked against every other booking on the offer.
+bookingsRouter.patch(
+  '/:id',
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const id = Number(req.params.id);
+    if (!Number.isInteger(id)) throw badRequest('Invalid booking id');
+    const body = req.body || {};
+    if (body.travellersCount === undefined && body.participants === undefined) {
+      throw badRequest('Nothing to update');
+    }
+
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      const { rows } = await client.query('SELECT * FROM bookings WHERE id = $1 FOR UPDATE', [id]);
+      const booking = rows[0];
+      if (!booking) { await client.query('ROLLBACK'); throw notFound('Booking not found'); }
+      if (booking.user_id !== req.user.id) {
+        await client.query('ROLLBACK');
+        throw forbidden('Not your booking');
+      }
+      if (booking.status === 'cancelled') {
+        await client.query('ROLLBACK');
+        throw conflict('A cancelled booking cannot be modified');
+      }
+      if (booking.payment_status === 'paid' || booking.status === 'confirmed') {
+        await client.query('ROLLBACK');
+        throw conflict('A paid booking cannot be modified; contact the agency');
+      }
+
+      const travellers = body.travellersCount === undefined
+        ? booking.travellers_count
+        : Number(body.travellersCount);
+      if (!isPositiveInt(travellers) || travellers > 20) {
+        await client.query('ROLLBACK');
+        throw badRequest('travellersCount must be between 1 and 20');
+      }
+
+      const participants = body.participants === undefined
+        ? null
+        : (Array.isArray(body.participants) ? body.participants : []);
+      if (participants) {
+        if (participants.length !== travellers) {
+          await client.query('ROLLBACK');
+          throw badRequest('participants count must match travellersCount');
+        }
+        for (const p of participants) {
+          if (!isNonEmptyString(p.fullName, 200)) {
+            await client.query('ROLLBACK');
+            throw badRequest('each participant needs a fullName');
+          }
+        }
+      }
+
+      // Capacity check ignores this booking's current seats: they are being replaced.
+      const { rows: capRows } = await client.query(
+        `SELECT j.capacity, COALESCE(SUM(b.travellers_count) FILTER (WHERE b.id <> $2), 0) AS booked
+         FROM journeys j LEFT JOIN bookings b
+           ON b.journey_id = j.id AND b.status IN ('pending', 'confirmed')
+         WHERE j.id = $1 GROUP BY j.capacity`,
+        [booking.journey_id, id]
+      );
+      if (!capRows.length) { await client.query('ROLLBACK'); throw notFound('Journey not found'); }
+      if (Number(capRows[0].booked) + travellers > capRows[0].capacity) {
+        await client.query('ROLLBACK');
+        throw conflict('Not enough capacity for this journey');
+      }
+
+      await client.query(
+        'UPDATE bookings SET travellers_count = $2, total_price = $3 WHERE id = $1',
+        [id, travellers, centsToDecimalString(toCents(booking.unit_price) * travellers)]
+      );
+
+      if (participants) {
+        await client.query('DELETE FROM participants WHERE booking_id = $1', [id]);
+        const payerName = req.user.fullName.trim().toLowerCase();
+        for (const p of participants) {
+          const fullName = p.fullName.trim();
+          const status = fullName.toLowerCase() === payerName ? 'confirmed' : 'invited';
+          await client.query(
+            'INSERT INTO participants (booking_id, full_name, status) VALUES ($1, $2, $3)',
+            [id, fullName, status]
+          );
+        }
+      }
+
+      await client.query('COMMIT');
+      const detail = await loadBookingDetail(pool, id);
+      res.json({ booking: detail.booking });
+    } catch (err) {
+      await client.query('ROLLBACK').catch(() => {});
+      throw err;
+    } finally {
+      client.release();
+    }
   })
 );
 
