@@ -90,7 +90,14 @@ export default function MyBookings() {
                     </td>
                     <td data-label="Journey">{journeyCell(item)}</td>
                     <td data-label="Departure">{formatDate(item.journey?.startDate)}</td>
-                    <td data-label="Travellers">{item.travellersCount}</td>
+                    <td data-label="Travellers">
+                      {item.travellersCount}
+                      {item.participants && item.participants.length > 0 && (
+                        <span className="traveller-names">
+                          {item.participants.map((p) => p.fullName).join(', ')}
+                        </span>
+                      )}
+                    </td>
                     <td data-label="Total">{formatPrice(item.totalPrice ?? item.pricing?.total)}</td>
                     <td data-label="Status">{paymentBadge(item)}</td>
                     <td data-label="">
