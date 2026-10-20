@@ -9,6 +9,7 @@ const INITIAL = {
   destination: '',
   maxPrice: '',
   group: '',
+  available: '',
   sort: '',
 }
 
@@ -109,6 +110,17 @@ export default function Journeys() {
               <option value="">All</option>
               <option value="true">Group journeys</option>
               <option value="false">Individual</option>
+            </select>
+          </div>
+          <div className="field">
+            <label htmlFor="f-available">Availability</label>
+            <select
+              id="f-available"
+              value={filters.available}
+              onChange={(e) => set('available', e.target.value)}
+            >
+              <option value="">Any</option>
+              <option value="true">Seats available</option>
             </select>
           </div>
           <div className="field">
