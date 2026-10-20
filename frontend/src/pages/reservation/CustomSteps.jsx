@@ -86,7 +86,7 @@ export function CustomPartyStep({ state, catalog, update }) {
         ))}
       </div>
 
-      <div className="field" style={{ maxWidth: 320 }}>
+      <div className="field maxw-320">
         <label htmlFor="wz-members">Number of members</label>
         <input
           id="wz-members"
