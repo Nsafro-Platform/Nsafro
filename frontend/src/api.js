@@ -66,6 +66,7 @@ export const api = {
 
   // Reservations (multi-type wizard: PERSONAL | GROUP | CUSTOM)
   reservationCatalog: () => request('/reservations/catalog'),
+  myReservations: () => request('/reservations'),
   quoteReservation: (payload) => request('/reservations/quote', { method: 'POST', body: payload }),
   createReservation: (payload) => request('/reservations', { method: 'POST', body: payload }),
   reservation: (id) => request(`/reservations/${id}`),
