@@ -75,7 +75,7 @@ export function PaymentStep({
         <h1>Your reservation is confirmed 🎉</h1>
         <p className="lead">Keep this reference for any support requests:</p>
         <div className="ref">{reservation.reference}</div>
-        <ul className="info-list" style={{ textAlign: 'left' }}>
+        <ul className="info-list text-left">
           {rows.map((row) => (
             <li key={row.label}>
               <strong>{row.label}</strong>
@@ -91,7 +91,7 @@ export function PaymentStep({
             <span>Simulated success — no real money moved</span>
           </li>
         </ul>
-        <button type="button" className="btn btn-primary" style={{ marginTop: 22 }} onClick={onRestart}>
+        <button type="button" className="btn btn-primary mt-24" onClick={onRestart}>
           Start a new reservation
         </button>
       </div>

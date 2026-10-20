@@ -7,6 +7,7 @@ import TransportStep from './reservation/TransportStep'
 import { GroupExperienceStep, GroupJourneyStep, ParticipantsStep } from './reservation/GroupSteps'
 import { CustomPartyStep, CustomPlanStep } from './reservation/CustomSteps'
 import { PaymentStep, ReviewStep } from './reservation/SummarySteps'
+import { PanelSkeleton } from '../components/Loading'
 import {
   buildCreatePayload,
   buildPayload,
@@ -145,7 +146,15 @@ export default function Reserve() {
       </div>
     )
   }
-  if (!catalog) return <p className="loading">Loading reservation options…</p>
+  if (!catalog) {
+    return (
+      <section className="section">
+        <div className="container narrow">
+          <PanelSkeleton lines={6} label="Loading reservation options" />
+        </div>
+      </section>
+    )
+  }
 
   const asideRows = summaryRows(state, catalog)
 
@@ -256,7 +265,7 @@ export default function Reserve() {
             )}
             {quoteLoading && <p className="hint">Updating price…</p>}
             {quoteError && <p className="hint">{quoteError}</p>}
-            <p className="hint" style={{ fontSize: 12, marginTop: 16 }}>
+            <p className="hint mt-16">
               Amounts are recalculated on the server from the offer and option prices stored in the
               database. Checkout is a simulation only — no real charge is made.
             </p>
