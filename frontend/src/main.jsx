@@ -13,6 +13,7 @@ import Book from './pages/Book'
 import Reserve from './pages/Reserve'
 import Payment from './pages/Payment'
 import MyBookings from './pages/MyBookings'
+import ETicket from './pages/ETicket'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminUsers from './pages/AdminUsers'
 import AdminBookings from './pages/AdminBookings'
@@ -85,6 +86,14 @@ createRoot(document.getElementById('root')).render(
               element={
                 <RequireAuth>
                   <Payment />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="bookings/:id/ticket"
+              element={
+                <RequireAuth>
+                  <ETicket />
                 </RequireAuth>
               }
             />

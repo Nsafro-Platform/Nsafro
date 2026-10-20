@@ -148,7 +148,9 @@ bookingsRouter.get(
     const id = Number(req.params.id);
     if (!Number.isInteger(id)) throw badRequest('Invalid booking id');
     const { rows } = await pool.query(
-      `SELECT b.*, j.title AS journey_title, j.destination AS journey_destination, j.start_date AS journey_start
+      `SELECT b.*, j.title AS journey_title, j.destination AS journey_destination,
+              j.start_date AS journey_start, j.end_date AS journey_end,
+              j.duration_days AS journey_duration, j.transport AS journey_transport
        FROM bookings b JOIN journeys j ON j.id = b.journey_id WHERE b.id = $1`,
       [id]
     );
@@ -157,11 +159,15 @@ bookingsRouter.get(
     if (booking.user_id !== req.user.id && req.user.role !== 'admin') throw forbidden('Not your booking');
     res.json({
       booking: bookingToJson(booking, {
+        // Journey snapshot for the confirmation and e-ticket screens.
         journey: {
           id: booking.journey_id,
           title: booking.journey_title,
           destination: booking.journey_destination,
           startDate: booking.journey_start,
+          endDate: booking.journey_end,
+          durationDays: booking.journey_duration,
+          transport: booking.journey_transport,
         },
         participants: await loadParticipants(pool, booking.id),
       }),
