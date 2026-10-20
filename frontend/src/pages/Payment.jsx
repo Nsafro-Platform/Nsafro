@@ -174,9 +174,17 @@ export default function Payment() {
                 ))}
               </ul>
             )}
-            <Link to="/bookings" className="btn btn-primary mt-24">
-              Go to my bookings
-            </Link>
+            <div className="actions-row">
+              {/* Wizard reservations have no e-ticket format yet: tickets are booking-only. */}
+              {!isReservation && (
+                <Link to={`/bookings/${record.id}/ticket`} className="btn btn-primary">
+                  View my e-ticket
+                </Link>
+              )}
+              <Link to="/bookings" className="btn btn-outline">
+                Go to my bookings
+              </Link>
+            </div>
           </div>
         )}
 

@@ -1175,6 +1175,121 @@ table.bookings .ref {
   color: var(--muted);
 }
 
+/* ---- e-ticket (printable booking confirmation) ---- */
+
+.ticket {
+  background: #fff;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--card-shadow);
+  padding: 28px;
+}
+
+.ticket-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px dashed var(--hairline);
+  padding-bottom: 20px;
+}
+
+.ticket-head h1 {
+  font-size: clamp(24px, 3vw, 32px);
+  margin: 0 0 6px;
+}
+
+.ticket-ref {
+  text-align: right;
+}
+
+.ticket-ref span {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.ticket-ref strong {
+  font-size: 20px;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+}
+
+.ticket-grid {
+  list-style: none;
+  margin: 20px 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+}
+
+.ticket-grid span {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ticket-grid strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.ticket-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.ticket-table th,
+.ticket-table td {
+  text-align: left;
+  padding: 8px 6px;
+  border-bottom: 1px solid #f1f1f7;
+}
+
+.ticket-table th {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.ticket-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--hairline);
+  font-size: 13px;
+}
+
+/* Printing keeps only the ticket: no site chrome, no action buttons. */
+@media print {
+  .no-print,
+  .site-header,
+  .site-footer {
+    display: none !important;
+  }
+
+  .section {
+    padding: 0;
+  }
+
+  .ticket {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+  }
+}
+
 /* ---- reservation wizard (devision.md; styled after reservation.png) ---- */
 
 .wz-steps {

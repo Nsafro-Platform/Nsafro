@@ -101,6 +101,11 @@ export default function MyBookings() {
                     <td data-label="Total">{formatPrice(item.totalPrice ?? item.pricing?.total)}</td>
                     <td data-label="Status">{paymentBadge(item)}</td>
                     <td data-label="">
+                      {item.kind !== 'reservation' && item.paymentStatus === 'paid' && (
+                        <Link to={`/bookings/${item.id}/ticket`} className="btn btn-sm btn-outline">
+                          E-ticket
+                        </Link>
+                      )}
                       {item.paymentStatus !== 'paid' && item.status !== 'cancelled' && (
                         <Link
                           to={
