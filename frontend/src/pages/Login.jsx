@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { api } from '../api'
 import { useAuth } from '../auth'
+import PasswordField from '../components/PasswordField'
 
 export default function Login() {
   const { login, refresh } = useAuth()
@@ -114,22 +115,21 @@ export default function Login() {
           </div>
           <div className="field">
             <label htmlFor="login-password">Password</label>
-            <input
+            <PasswordField
               id="login-password"
-              type="password"
               autoComplete="current-password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <button type="submit" className="btn btn-primary" style={{ width: '100%' }} disabled={busy}>
+          <button type="submit" className="btn btn-primary btn-block" disabled={busy}>
             {busy ? 'Signing in…' : 'Sign in'}
           </button>
           {googleClientId && (
             <>
-              <p className="hint" style={{ textAlign: 'center', margin: '16px 0 4px' }}>or</p>
-              <div ref={googleDivRef} style={{ display: 'flex', justifyContent: 'center', maxWidth: '100%' }} />
+              <p className="or-divider">or</p>
+              <div ref={googleDivRef} className="google-slot" />
             </>
           )}
           <p className="swap">

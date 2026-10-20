@@ -24,21 +24,23 @@ export function JourneyCard({ journey, index = 0 }) {
           (journey.destination || journey.title)[0]
         )}
       </div>
-      <div>
+      <div className="journey-card-body">
         <div className="meta">
           <h3>{journey.title}</h3>
           <span className={`badge ${journey.isGroup ? 'blue' : 'green'}`}>
-            {journey.isGroup ? 'Group Journey' : 'Individual'}
+            {journey.isGroup ? 'Group' : 'Individual'}
           </span>
         </div>
-        <div className="meta">
-          <span>{journey.destination}</span>
-          <span className="price">{formatPrice(journey.price)}</span>
-        </div>
-        <div className="meta">
+        <p className="journey-card-meta">
+          {journey.destination} · {journey.durationDays} days
+        </p>
+        <p className="journey-card-meta">Departs {formatDate(journey.startDate)}</p>
+        <div className="journey-card-foot">
           <span>
-            {formatDate(journey.startDate)} · {journey.durationDays} days
+            <span className="price-label">from </span>
+            <span className="price">{formatPrice(journey.price)}</span>
           </span>
+          <span className="journey-card-cta">View details</span>
         </div>
       </div>
     </Link>

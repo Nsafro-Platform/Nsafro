@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth'
+import PasswordField from '../components/PasswordField'
 
 export default function Register() {
   const { register } = useAuth()
@@ -58,9 +59,8 @@ export default function Register() {
           </div>
           <div className="field">
             <label htmlFor="reg-password">Password</label>
-            <input
+            <PasswordField
               id="reg-password"
-              type="password"
               autoComplete="new-password"
               required
               minLength={8}
@@ -70,7 +70,7 @@ export default function Register() {
             />
             <span className="hint">8–100 characters.</span>
           </div>
-          <button type="submit" className="btn btn-primary" style={{ width: '100%' }} disabled={busy}>
+          <button type="submit" className="btn btn-primary btn-block" disabled={busy}>
             {busy ? 'Creating account…' : 'Create account'}
           </button>
           <p className="swap">

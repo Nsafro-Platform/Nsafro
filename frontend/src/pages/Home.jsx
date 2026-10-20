@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../api'
 import { JourneyCard } from './shared'
-import homePageArt from '../assets/home_page.svg'
+import { JourneyCardsSkeleton } from '../components/Loading'
+import homePageArt from '../assets/home_page.webp'
 
 const STEPS = [
   {
@@ -36,23 +37,33 @@ export default function Home() {
       <section className="hero">
         <div className="container hero-inner">
           <div>
-            <p className="subheading">Best Destinations around the world</p>
+            {/* <p className="hero-eyebrow">Best destinations around the world</p> */}
             <h1>Travel, enjoy and live a new and full life for you</h1>
-            <p>
+            <p className="hero-lead">
               Discover curated journeys, book with a simulated checkout and keep every confirmation
               in one place. Demo platform — no real charges are ever made.
             </p>
-            <Link to="/journeys" className="btn btn-primary">
-              Explore journeys
-            </Link>
+            <div className="hero-cta">
+              <Link to="/journeys" className="btn btn-primary btn-lg">
+                Explore journeys
+              </Link>
+              {/* <a href="#how-it-works" className="text-link">
+                See how it works →
+              </a> */}
+            </div>
+            {/* <ul className="hero-points">
+              <li>Curated journeys</li>
+              <li>Simulated checkout</li>
+              <li>Every confirmation in one place</li>
+            </ul> */}
           </div>
           <div className="hero-art">
-            <img src={homePageArt} alt="Nsafro travel destinations" />
+            <img src={homePageArt} alt="Nsafro travel destinations" width="900" height="900" />
           </div>
         </div>
       </section>
 
-      <section className="section" aria-labelledby="how-it-works">
+      <section className="section section-alt" aria-labelledby="how-it-works">
         <div className="container">
           <div className="section-head">
             <p className="subheading">Easy and Fast</p>
@@ -77,7 +88,7 @@ export default function Home() {
             <h2 id="offers">Latest journey offers</h2>
           </div>
           {error && <p className="alert alert-error">{error}</p>}
-          {!error && !journeys && <p className="loading">Loading journeys…</p>}
+          {!error && !journeys && <JourneyCardsSkeleton count={3} />}
           {journeys && journeys.length === 0 && <p className="empty-state">No published journeys yet.</p>}
           {journeys && journeys.length > 0 && (
             <div className="grid-cards">

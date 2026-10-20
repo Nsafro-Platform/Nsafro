@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { api, formatDate, formatPrice } from '../api'
 import { useAuth } from '../auth'
 import MediaGallery from '../components/MediaGallery'
+import { JourneyDetailSkeleton } from '../components/Loading'
 
 export default function JourneyDetail() {
   const { id } = useParams()
@@ -38,8 +39,22 @@ export default function JourneyDetail() {
       </div>
     )
   }
-  if (error) return <p className="alert alert-error">{error}</p>
-  if (!journey) return <p className="loading">Loading journey…</p>
+  if (error) {
+    return (
+      <div className="container">
+        <p className="alert alert-error">{error}</p>
+      </div>
+    )
+  }
+  if (!journey) {
+    return (
+      <section className="section">
+        <div className="container">
+          <JourneyDetailSkeleton />
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section className="section">
@@ -55,7 +70,7 @@ export default function JourneyDetail() {
               destination={journey.destination}
               fallbackIndex={journey.id}
             />
-            <div className="meta" style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 10 }}>
+            <div className="badge-row">
               <span className={`badge ${journey.isGroup ? 'blue' : 'green'}`}>
                 {journey.isGroup ? 'Group Journey' : 'Individual Journey'}
               </span>
@@ -79,7 +94,7 @@ export default function JourneyDetail() {
 
           <aside className="booking-card" aria-label="Booking summary">
             <div className="price-line">{formatPrice(journey.price)}</div>
-            <p className="page-sub">per traveller</p>
+            <p className="price-note">per traveller</p>
             <ul className="info-list">
               <li>
                 <strong>Destination</strong>
@@ -115,15 +130,15 @@ export default function JourneyDetail() {
               </li>
             </ul>
             {user ? (
-              <Link to={`/journeys/${journey.id}/book`} className="btn btn-primary" style={{ width: '100%', marginTop: 18 }}>
+              <Link to={`/journeys/${journey.id}/book`} className="btn btn-primary btn-block mt-24">
                 Book this journey
               </Link>
             ) : (
-              <Link to="/login" className="btn btn-purple" style={{ width: '100%', marginTop: 18 }}>
+              <Link to="/login" className="btn btn-purple btn-block mt-24">
                 Sign in to book
               </Link>
             )}
-            <p className="hint" style={{ fontSize: 12, marginTop: 10 }}>
+            <p className="hint mt-12">
               Payment checkout is a simulation — no real charge is made.
             </p>
           </aside>

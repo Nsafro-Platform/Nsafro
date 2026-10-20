@@ -31,7 +31,7 @@ export default function Profile() {
               </span>
             </li>
           </ul>
-          <Link to="/bookings" className="btn btn-primary" style={{ marginTop: 20 }}>
+          <Link to="/bookings" className="btn btn-primary mt-24">
             View my bookings
           </Link>
         </div>

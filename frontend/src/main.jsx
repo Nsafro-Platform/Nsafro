@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { BrowserRouter, Link, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { AuthProvider, useAuth } from './auth'
 import Layout from './components/Layout'
 import Home from './pages/Home'
@@ -80,6 +80,14 @@ createRoot(document.getElementById('root')).render(
                 </RequireAuth>
               }
             />
+            <Route
+              path="reservations/:id/pay"
+              element={
+                <RequireAuth>
+                  <Payment />
+                </RequireAuth>
+              }
+            />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
             <Route
@@ -146,7 +154,29 @@ createRoot(document.getElementById('root')).render(
                 </RequireAdmin>
               }
             />
-            <Route path="*" element={<p className="page-status">Page not found</p>} />
+            <Route
+              path="*"
+              element={
+                <section className="section">
+                  <div className="container">
+                    <div className="status-panel">
+                      <h1>Page not found</h1>
+                      <p>
+                        The page you were looking for doesn’t exist, or it has moved somewhere else.
+                      </p>
+                      <div className="status-actions">
+                        <Link to="/" className="btn btn-primary">
+                          Back to home
+                        </Link>
+                        <Link to="/journeys" className="btn btn-outline">
+                          Browse journeys
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              }
+            />
           </Route>
         </Routes>
       </AuthProvider>
