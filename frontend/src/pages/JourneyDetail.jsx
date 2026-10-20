@@ -128,8 +128,22 @@ export default function JourneyDetail() {
                 <strong>Capacity</strong>
                 <span>{journey.capacity} travellers</span>
               </li>
+              {typeof journey.remainingSeats === 'number' && (
+                <li>
+                  <strong>Availability</strong>
+                  <span>
+                    {journey.remainingSeats === 0
+                      ? 'Fully booked'
+                      : `${journey.remainingSeats} of ${journey.capacity} seats left`}
+                  </span>
+                </li>
+              )}
             </ul>
-            {user ? (
+            {journey.remainingSeats === 0 ? (
+              <p className="alert alert-error mt-24">
+                This journey is fully booked — no seats left for this departure.
+              </p>
+            ) : user ? (
               <Link to={`/journeys/${journey.id}/book`} className="btn btn-primary btn-block mt-24">
                 Book this journey
               </Link>
