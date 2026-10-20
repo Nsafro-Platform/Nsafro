@@ -41,9 +41,13 @@ function RequireAdmin({ children }) {
   return children
 }
 
+// The app is served from a sub-path on GitHub Pages (e.g. "/Nsafro/"), so the
+// router has to be told which prefix to strip from the current location.
+const basename = import.meta.env.BASE_URL
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <AuthProvider>
         <Routes>
           <Route element={<Layout />}>

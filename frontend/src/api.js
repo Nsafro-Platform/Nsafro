@@ -1,6 +1,15 @@
 // Thin wrapper around fetch for the Journey Platform API.
 // All requests carry credentials so the httpOnly auth cookie works.
 
+// The API is reached through VITE_API_BASE_URL when the front-end is deployed
+// on a host that has no backend of its own. It defaults to the same origin's
+// /api path, which the Vite dev proxy forwards to the local backend.
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/+$/, '')
+
+// The GitHub Pages build is a static demo: there is no server behind it, so the
+// requests are answered by the in-browser API in ./demo/api.js instead.
+export const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === 'true'
+
 export class ApiError extends Error {
   constructor(message, status) {
     super(message)
@@ -9,7 +18,12 @@ export class ApiError extends Error {
 }
 
 async function request(path, { method = 'GET', body } = {}) {
-  const res = await fetch(`/api${path}`, {
+  if (DEMO_MODE) {
+    const { demoRequest } = await import('./demo/api')
+    return demoRequest(path, { method, body })
+  }
+
+  const res = await fetch(`${API_BASE}${path}`, {
     method,
     credentials: 'include',
     headers: body !== undefined ? { 'Content-Type': 'application/json' } : undefined,
