@@ -6,16 +6,19 @@
 //
 // This is demo data only: passwords and "payments" never leave the browser.
 
-import {
-  DEMO_PASSWORD,
-  EXTRA_JOURNEYS,
-  FLAGSHIP_JOURNEYS,
-  JOURNEY_IMAGE,
-  OPTION_SEEDS,
-} from './seed'
+import { EXTRA_IMAGE_MAP, JOURNEY_GALLERY, JOURNEY_IMAGES } from './images'
+import { DEMO_PASSWORD, EXTRA_JOURNEYS, FLAGSHIP_JOURNEYS, OPTION_SEEDS } from './seed'
+
+// Principal photo plus the gallery photos, exactly like the backend seed.
+function artwork(title) {
+  const imageUrl = JOURNEY_IMAGES[title] || EXTRA_IMAGE_MAP[title] || null
+  return { imageUrl, images: [imageUrl, ...(JOURNEY_GALLERY[title] || [])].filter(Boolean) }
+}
 
 const STORAGE_KEY = 'nsafro-demo-db'
-const STORAGE_VERSION = 1
+// Bump when the seeded catalogue changes so returning visitors pick up the new
+// demo data instead of a stale copy from localStorage.
+const STORAGE_VERSION = 2
 const SESSION_KEY = 'nsafro-demo-session'
 
 class DemoError extends Error {
@@ -126,8 +129,7 @@ function createState() {
       capacity: seed.capacity,
       transport: seed.transport,
       accommodation: seed.accommodation,
-      imageUrl: JOURNEY_IMAGE(seed.title),
-      images: [JOURNEY_IMAGE(seed.title)].filter(Boolean),
+      ...artwork(seed.title),
       isGroup: seed.isGroup,
       program: seed.program,
       status: 'published',
@@ -153,8 +155,7 @@ function createState() {
       capacity: 6 + ((index * 7) % 14),
       transport: transports[index % transports.length],
       accommodation: stays[(index + 2) % stays.length],
-      imageUrl: null,
-      images: [],
+      ...artwork(title),
       isGroup: index % 3 !== 2,
       program: '',
       // One draft offer stays visible to the admin demo only.

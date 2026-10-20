@@ -6,23 +6,6 @@
 
 export const DEMO_PASSWORD = 'Demo1234!'
 
-// Principal photo per flagship journey: public Wikimedia Commons photos of the
-// actual demo destinations, same URLs as the backend seed.
-const JOURNEY_IMAGES = {
-  'Atlas Mountains Trek':
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Plateau_Yagour%2C_Agdal%2C_Morocco.jpg/960px-Plateau_Yagour%2C_Agdal%2C_Morocco.jpg',
-  'Marrakech City Break':
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Djemaa_el_Fna.jpg/960px-Djemaa_el_Fna.jpg',
-  'Sahara Desert Nights':
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Merzouga_Dunes_2011.jpg/960px-Merzouga_Dunes_2011.jpg',
-  'Chefchaouen Blue Escape':
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Chefchaouen-the-blue-city-of-morocco-with-palm-trees-and-the-mountain-view-in-the-backrgound.jpg/960px-Chefchaouen-the-blue-city-of-morocco-with-palm-trees-and-the-mountain-view-in-the-backrgound.jpg',
-  'Essaouira Coast & Wind':
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/%22Ein_bemerkenswertes_historisches_Denkmal%22._16.jpg/960px-%22Ein_bemerkenswertes_historisches_Denkmal%22._16.jpg',
-  'Fes Heritage Weekend':
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Bab_Bou_Jeloud_Frame_Minaret_Fes_Nov25_A7CR_09127-8_HDR3.jpg/960px-Bab_Bou_Jeloud_Frame_Minaret_Fes_Nov25_A7CR_09127-8_HDR3.jpg',
-}
-
 // Offsets are days from the day the demo data is first created, so the
 // catalogue always shows upcoming departures.
 export const FLAGSHIP_JOURNEYS = [
@@ -169,5 +152,3 @@ export const OPTION_SEEDS = [
   ['activity', 'Beginner surf lesson', 'Two-hour lesson, board and wetsuit included.', '35.00'],
   ['activity', 'Atlas day hike', 'Full-day guided hike with picnic lunch.', '45.00'],
 ]
-
-export const JOURNEY_IMAGE = (title) => JOURNEY_IMAGES[title] || null
