@@ -106,6 +106,13 @@ export default function MyBookings() {
                           E-ticket
                         </Link>
                       )}
+                      {item.kind !== 'reservation' &&
+                        item.paymentStatus !== 'paid' &&
+                        item.status !== 'cancelled' && (
+                          <Link to={`/bookings/${item.id}/edit`} className="btn btn-sm btn-outline">
+                            Modify
+                          </Link>
+                        )}
                       {item.paymentStatus !== 'paid' && item.status !== 'cancelled' && (
                         <Link
                           to={
