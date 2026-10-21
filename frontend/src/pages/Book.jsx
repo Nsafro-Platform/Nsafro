@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { api, formatDate, formatPrice } from '../api'
 import { useAuth } from '../auth'
+import { PanelSkeleton } from '../components/Loading'
 
 export default function Book() {
   const { id } = useParams()
@@ -44,7 +45,15 @@ export default function Book() {
       </div>
     )
   }
-  if (!journey) return <p className="loading">Loading journey…</p>
+  if (!journey) {
+    return (
+      <section className="section">
+        <div className="container narrow">
+          <PanelSkeleton lines={5} label="Loading journey" />
+        </div>
+      </section>
+    )
+  }
 
   const estimate = Number(journey.price) * travellers
 
@@ -122,9 +131,9 @@ export default function Book() {
                 <span className="hint">Journey capacity: {journey.capacity} travellers in total.</span>
               </div>
 
-              <h2 style={{ fontSize: 24, margin: '18px 0 12px' }}>Traveller names</h2>
+              <h2 className="sub-title">Traveller names</h2>
               {journey.isGroup ? (
-                <p className="hint" style={{ marginBottom: 16 }}>
+                <p className="hint mb-16">
                   This is an organized <strong>group journey</strong> — every participant is listed on
                   the booking.
                 </p>
@@ -168,7 +177,7 @@ export default function Book() {
                 <span>{user?.email}</span>
               </li>
             </ul>
-            <p className="hint" style={{ fontSize: 12, marginTop: 16 }}>
+            <p className="hint mt-16">
               The exact total is recalculated server-side from the offer price stored in the
               database. Payment is a simulation only — no real charge.
             </p>

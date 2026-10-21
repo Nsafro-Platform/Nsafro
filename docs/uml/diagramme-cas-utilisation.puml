@@ -1,0 +1,71 @@
+@startuml diagramme-cas-utilisation
+' ============================================================
+'  Nsafro — Diagramme de cas d'utilisation (version simplifiée)
+'  Rendu : plantuml -tpng -tsvg diagramme-cas-utilisation.puml
+' ============================================================
+
+title <b>Nsafro — Diagramme de cas d'utilisation</b>
+
+left to right direction
+skinparam shadowing false
+skinparam actorStyle awesome
+skinparam ArrowColor #4A5568
+skinparam usecase {
+  BackgroundColor #F4F9FD
+  BorderColor #2C6E9B
+  FontSize 14
+}
+
+' ---------- Acteurs ----------
+actor "Visiteur" as Visiteur
+actor "Voyageur" as Voyageur
+actor "Administrateur" as Admin
+
+Visiteur <|-- Voyageur
+Voyageur <|-- Admin
+
+' ---------- Cas d'utilisation ----------
+rectangle "Site de réservation" {
+  usecase "Consulter les voyages" as UC_Browse
+  usecase "Consulter une fiche voyage" as UC_Detail
+  usecase "Créer un compte" as UC_Register
+  usecase "Se connecter" as UC_Login
+  usecase "Réserver un voyage" as UC_Book
+  usecase "Payer la réservation" as UC_Pay
+  usecase "Consulter ses réservations" as UC_History
+}
+
+rectangle "Back-office" {
+  usecase "Gérer les voyages" as UC_ManageJourneys
+  usecase "Gérer les utilisateurs" as UC_ManageUsers
+  usecase "Gérer les réservations" as UC_ManageBookings
+  usecase "Consulter le tableau de bord" as UC_Dashboard
+}
+
+' ---------- Associations ----------
+Visiteur --> UC_Browse
+Visiteur --> UC_Detail
+Visiteur --> UC_Register
+Visiteur --> UC_Login
+
+Voyageur --> UC_Book
+Voyageur --> UC_Pay
+Voyageur --> UC_History
+
+Admin --> UC_ManageJourneys
+Admin --> UC_ManageUsers
+Admin --> UC_ManageBookings
+Admin --> UC_Dashboard
+
+' ---------- Relations ----------
+UC_Detail .> UC_Browse : <<extend>>
+UC_Book ..> UC_Pay : <<include>>
+UC_History ..> UC_Pay : <<extend>>
+
+legend bottom right
+  <b>Visiteur</b> : accès public
+  <b>Voyageur</b> : compte créé
+  <b>Administrateur</b> : back-office
+endlegend
+
+@enduml

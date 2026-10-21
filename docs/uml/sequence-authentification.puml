@@ -1,0 +1,43 @@
+@startuml sequence-authentification
+' ============================================================
+'  Nsafro — Séquence : authentification
+'  Rendu : plantuml -tpng -tsvg sequence-authentification.puml
+' ============================================================
+
+title <b>Nsafro — Séquence : connexion d'un utilisateur</b>
+
+autonumber
+skinparam shadowing false
+skinparam ArrowColor #4A5568
+skinparam sequence {
+  LifeLineBorderColor #2C6E9B
+  ParticipantBackgroundColor #DCEAF5
+  ParticipantBorderColor #2C6E9B
+}
+
+actor "Utilisateur" as U
+participant "Application React" as SPA
+participant "API Express" as API
+database "PostgreSQL" as DB
+
+U -> SPA : Saisit e-mail et mot de passe
+SPA -> API : POST /api/auth/login
+API -> DB : SELECT * FROM users WHERE email = ...
+DB --> API : utilisateur (ou aucun)
+
+alt Identifiants invalides
+  API --> SPA : 401 « Invalid email or password »
+  SPA --> U : Affiche l'erreur
+else Identifiants valides
+  API -> API : bcrypt.compare(mot de passe, hash)
+  API --> SPA : 200 utilisateur + cookie JWT (httpOnly)
+  SPA --> U : Redirige vers la page demandée
+end
+
+group Restauration de session
+  SPA -> API : GET /api/auth/me
+  API -> API : Vérifie le cookie JWT
+  API --> SPA : 200 utilisateur connecté
+end
+
+@enduml

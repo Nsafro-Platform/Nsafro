@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../api'
+import { TableSkeleton } from '../components/Loading'
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState(null)
@@ -17,9 +18,9 @@ export default function AdminDashboard() {
       <div className="container">
         <h1>Admin Dashboard</h1>
         {error && <p className="alert alert-error">{error}</p>}
-        {!stats && <p>Loading...</p>}
+        {!stats && <TableSkeleton rows={3} label="Loading dashboard" />}
         {stats && (
-          <div className="grid-cards" style={{ marginTop: '2rem' }}>
+          <div className="grid-cards mt-32">
             <div className="card">
               <h3>Users</h3>
               <p>{stats.users.count} total ({stats.users.admins} admins)</p>

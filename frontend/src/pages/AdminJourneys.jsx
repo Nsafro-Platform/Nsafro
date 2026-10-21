@@ -94,7 +94,7 @@ export default function AdminJourneys() {
       <div className="container">
         <h1>Journeys</h1>
         {error && <p className="alert alert-error">{error}</p>}
-        <form onSubmit={save} className="card" style={{ marginTop: '1rem' }}>
+        <form onSubmit={save} className="card mt-16">
           <h3>{editingId ? `Edit Journey #${editingId}` : 'Add Journey'}</h3>
           <div className="form-grid">
             <input placeholder="Title" value={form.title} onChange={e => setField('title', e.target.value)} required />
@@ -108,8 +108,8 @@ export default function AdminJourneys() {
             <input placeholder="Transport" value={form.transport} onChange={e => setField('transport', e.target.value)} />
             <input placeholder="Accommodation" value={form.accommodation} onChange={e => setField('accommodation', e.target.value)} />
           </div>
-          <textarea placeholder="Description" value={form.description} onChange={e => setField('description', e.target.value)} style={{ marginTop: 10 }} />
-          <textarea placeholder="Program" value={form.program} onChange={e => setField('program', e.target.value)} style={{ marginTop: 10 }} />
+          <textarea className="mt-12" placeholder="Description" value={form.description} onChange={e => setField('description', e.target.value)} />
+          <textarea className="mt-12" placeholder="Program" value={form.program} onChange={e => setField('program', e.target.value)} />
           <div className="form-row">
             <label><input type="checkbox" checked={form.is_group} onChange={e => setField('is_group', e.target.checked)} /> Group journey</label>
             <select value={form.status} onChange={e => setField('status', e.target.value)}>
@@ -121,13 +121,13 @@ export default function AdminJourneys() {
             {editingId && <button type="button" className="btn btn-outline" onClick={() => { setEditingId(null); setForm(INITIAL) }}>Cancel</button>}
           </div>
         </form>
-        <div style={{ marginTop: '1rem' }}>
+        <div className="mt-16">
           {journeys.map(j => (
-            <div key={j.id} className="card" style={{ marginBottom: 12 }}>
-              <p style={{ margin: '0 0 10px' }}>
+            <div key={j.id} className="card mb-12">
+              <p className="mb-12">
                 <strong>{j.title}</strong> ({j.destination}) - {j.status} - MAD {j.price}
               </p>
-              <div className="form-row" style={{ marginTop: 0 }}>
+              <div className="form-row mt-0">
                 <button disabled={busy} className="btn btn-outline" onClick={() => edit(j)}>Edit</button>
                 <button disabled={busy} className="btn btn-outline" onClick={() => del(j.id)}>Archive</button>
               </div>

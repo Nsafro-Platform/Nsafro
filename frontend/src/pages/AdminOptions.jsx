@@ -53,7 +53,7 @@ export default function AdminOptions() {
       <div className="container">
         <h1>Options</h1>
         {error && <p className="alert alert-error">{error}</p>}
-        <form onSubmit={create} className="card" style={{ marginTop: '1rem' }}>
+        <form onSubmit={create} className="card mt-16">
           <h3>Add Option</h3>
           <div className="form-grid">
             <select value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))} aria-label="Option category">
@@ -67,13 +67,13 @@ export default function AdminOptions() {
             <button disabled={busy} className="btn btn-primary">Add</button>
           </div>
         </form>
-        <div style={{ marginTop: '1rem' }}>
+        <div className="mt-16">
           {options.map(o => (
-            <div key={o.id} className="card" style={{ marginBottom: 12 }}>
-              <p style={{ margin: '0 0 10px' }}>
+            <div key={o.id} className="card mb-12">
+              <p className="mb-12">
                 <strong>{o.name}</strong> ({o.category}) - MAD {o.price}
               </p>
-              <div className="form-row" style={{ marginTop: 0 }}>
+              <div className="form-row mt-0">
                 <button disabled={busy} className="btn btn-outline" onClick={() => del(o.id)}>Delete</button>
               </div>
             </div>
