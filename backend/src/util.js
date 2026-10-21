@@ -26,7 +26,11 @@ export function isPositiveInt(value) {
 }
 
 export function isIsoDate(value) {
-  return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(value));
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  // Reject impossible days (2026-02-31) that Date.parse silently rolls over to
+  // March: such a value reaches Postgres as an invalid date and raises a 500.
+  const date = new Date(`${value}T00:00:00Z`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
 }
 
 // Exact money math using integer cents to avoid floating point drift.

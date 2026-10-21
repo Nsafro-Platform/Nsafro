@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { api } from '../api'
 import { JourneyCard } from './shared'
 import { JourneyCardsSkeleton } from '../components/Loading'
@@ -7,15 +7,41 @@ import { JourneyCardsSkeleton } from '../components/Loading'
 const INITIAL = {
   q: '',
   destination: '',
+  minPrice: '',
   maxPrice: '',
+  from: '',
+  to: '',
   group: '',
+  available: '',
   sort: '',
 }
 
+const FILTER_KEYS = Object.keys(INITIAL)
+
 const PAGE_SIZE = 9
 
+// A search is fully described by the URL, so a filtered catalogue can be
+// bookmarked, shared or reloaded and comes back identical.
+function readFilters(searchParams) {
+  const filters = { ...INITIAL }
+  for (const key of FILTER_KEYS) {
+    const value = searchParams.get(key)
+    if (value !== null) filters[key] = value
+  }
+  return filters
+}
+
+function toSearchParams(filters) {
+  const params = {}
+  for (const key of FILTER_KEYS) {
+    if (filters[key] !== '') params[key] = filters[key]
+  }
+  return params
+}
+
 export default function Journeys() {
-  const [filters, setFilters] = useState(INITIAL)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [filters, setFilters] = useState(() => readFilters(searchParams))
   const [page, setPage] = useState(1)
   const [pageData, setPageData] = useState(null)
   const [error, setError] = useState(null)
@@ -38,10 +64,18 @@ export default function Journeys() {
     }
   }, [filters, page])
 
-  // Filters reset the catalogue to the first page.
+  // Filters reset the catalogue to the first page and are mirrored in the URL.
   function set(name, value) {
     setPage(1)
-    setFilters((prev) => ({ ...prev, [name]: value }))
+    const next = { ...filters, [name]: value }
+    setFilters(next)
+    setSearchParams(toSearchParams(next), { replace: true })
+  }
+
+  function reset() {
+    setPage(1)
+    setFilters(INITIAL)
+    setSearchParams({}, { replace: true })
   }
 
   function goToPage(next) {
@@ -92,6 +126,18 @@ export default function Journeys() {
             />
           </div>
           <div className="field">
+            <label htmlFor="f-min-price">Min price (MAD)</label>
+            <input
+              id="f-min-price"
+              type="number"
+              min="0"
+              step="1"
+              placeholder="Any"
+              value={filters.minPrice}
+              onChange={(e) => set('minPrice', e.target.value)}
+            />
+          </div>
+          <div className="field">
             <label htmlFor="f-price">Max price (MAD)</label>
             <input
               id="f-price"
@@ -104,11 +150,40 @@ export default function Journeys() {
             />
           </div>
           <div className="field">
+            <label htmlFor="f-from">Departing from</label>
+            <input
+              id="f-from"
+              type="date"
+              value={filters.from}
+              onChange={(e) => set('from', e.target.value)}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="f-to">Departing before</label>
+            <input
+              id="f-to"
+              type="date"
+              value={filters.to}
+              onChange={(e) => set('to', e.target.value)}
+            />
+          </div>
+          <div className="field">
             <label htmlFor="f-group">Type</label>
             <select id="f-group" value={filters.group} onChange={(e) => set('group', e.target.value)}>
               <option value="">All</option>
               <option value="true">Group journeys</option>
               <option value="false">Individual</option>
+            </select>
+          </div>
+          <div className="field">
+            <label htmlFor="f-available">Availability</label>
+            <select
+              id="f-available"
+              value={filters.available}
+              onChange={(e) => set('available', e.target.value)}
+            >
+              <option value="">Any</option>
+              <option value="true">Seats available</option>
             </select>
           </div>
           <div className="field">
@@ -120,7 +195,7 @@ export default function Journeys() {
             </select>
           </div>
           <div className="field actions">
-            <button type="button" className="btn btn-outline" onClick={() => setFilters(INITIAL)}>
+            <button type="button" className="btn btn-outline" onClick={reset}>
               Reset
             </button>
           </div>
@@ -130,7 +205,7 @@ export default function Journeys() {
         {!error && !journeys && <JourneyCardsSkeleton count={PAGE_SIZE} />}
         {journeys && journeys.length === 0 && (
           <p className="empty-state">
-            No journeys match these filters. Try <Link to="/journeys" onClick={() => { setPage(1); setFilters(INITIAL) }}>resetting</Link> them.
+            No journeys match these filters. Try <Link to="/journeys" onClick={reset}>resetting</Link> them.
           </p>
         )}
         {journeys && journeys.length > 0 && (

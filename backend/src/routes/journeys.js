@@ -18,7 +18,17 @@ const EDITABLE_FIELDS = [
 
 const STATUS_VALUES = new Set(['draft', 'published', 'archived']);
 
+// Seats already taken by pending or confirmed bookings; cancelled ones free a seat.
+const BOOKED_SEATS_SQL = `(
+  SELECT COALESCE(SUM(b.travellers_count), 0) FROM bookings b
+  WHERE b.journey_id = j.id AND b.status IN ('pending', 'confirmed')
+)`;
+
 function journeyToJson(row) {
+  // Availability is derived from the offer capacity minus live bookings, so the
+  // catalogue never advertises seats that are already sold.
+  const bookedSeats = Number(row.booked_seats || 0);
+  const capacity = Number(row.capacity || 0);
   return {
     id: row.id,
     title: row.title,
@@ -38,6 +48,8 @@ function journeyToJson(row) {
     isGroup: row.is_group,
     program: row.program,
     status: row.status,
+    bookedSeats,
+    remainingSeats: Math.max(capacity - bookedSeats, 0),
   };
 }
 
@@ -131,8 +143,30 @@ journeysRouter.get(
       params.push(maxPrice);
       conditions.push(`price <= ${`$${params.length}`}`);
     }
+    const minPrice = Number(req.query.minPrice);
+    if (Number.isFinite(minPrice) && minPrice >= 0) {
+      params.push(minPrice);
+      conditions.push(`price >= ${`$${params.length}`}`);
+    }
+
+    // Departure window: both bounds are inclusive and filtered on start_date.
+    // A malformed date is a client error rather than a silently ignored filter.
+    for (const [field, column, operator] of [
+      ['from', 'start_date', '>='],
+      ['to', 'start_date', '<='],
+    ]) {
+      if (req.query[field] === undefined || req.query[field] === '') continue;
+      if (!isIsoDate(req.query[field])) throw badRequest(`${field} must be a YYYY-MM-DD date`);
+      params.push(req.query[field]);
+      conditions.push(`${column} ${operator} $${params.length}`);
+    }
+    if (req.query.from && req.query.to && req.query.from > req.query.to) {
+      throw badRequest('from must be on or before to');
+    }
     if (req.query.group === 'true') conditions.push('is_group = TRUE');
     if (req.query.group === 'false') conditions.push('is_group = FALSE');
+    // Only offers that still have at least one free seat.
+    if (req.query.available === 'true') conditions.push(`j.capacity > ${BOOKED_SEATS_SQL}`);
 
     const orderBy = req.query.sort === 'price_asc' ? 'price ASC, start_date ASC'
       : req.query.sort === 'price_desc' ? 'price DESC, start_date ASC'
@@ -147,14 +181,15 @@ journeysRouter.get(
     const page = Number.isFinite(pageRaw) ? Math.max(Math.floor(pageRaw), 1) : 1;
 
     const { rows: countRows } = await pool.query(
-      `SELECT COUNT(*) AS count FROM journeys ${where}`,
+      `SELECT COUNT(*) AS count FROM journeys j ${where}`,
       params
     );
     const total = Number(countRows[0].count);
     const totalPages = Math.max(Math.ceil(total / limit), 1);
 
     const { rows } = await pool.query(
-      `SELECT j.*, ${JOURNEY_IMAGES_SQL} FROM journeys j ${where}
+      `SELECT j.*, ${JOURNEY_IMAGES_SQL}, ${BOOKED_SEATS_SQL} AS booked_seats
+       FROM journeys j ${where}
        ORDER BY ${orderBy} LIMIT ${limit} OFFSET ${(page - 1) * limit}`,
       params
     );
@@ -169,7 +204,8 @@ journeysRouter.get(
     const id = Number(req.params.id);
     if (!Number.isInteger(id)) throw badRequest('Invalid journey id');
     const { rows } = await pool.query(
-      `SELECT j.*, ${JOURNEY_IMAGES_SQL} FROM journeys j WHERE j.id = $1`,
+      `SELECT j.*, ${JOURNEY_IMAGES_SQL}, ${BOOKED_SEATS_SQL} AS booked_seats
+       FROM journeys j WHERE j.id = $1`,
       [id]
     );
     const journey = rows[0];
@@ -245,7 +281,8 @@ journeysRouter.patch(
         );
       }
       const { rows: after } = await client.query(
-        `SELECT j.*, ${JOURNEY_IMAGES_SQL} FROM journeys j WHERE j.id = $1`,
+        `SELECT j.*, ${JOURNEY_IMAGES_SQL}, ${BOOKED_SEATS_SQL} AS booked_seats
+         FROM journeys j WHERE j.id = $1`,
         [id]
       );
       await client.query('COMMIT');

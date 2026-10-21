@@ -1,6 +1,15 @@
 // Thin wrapper around fetch for the Journey Platform API.
 // All requests carry credentials so the httpOnly auth cookie works.
 
+// The API is reached through VITE_API_BASE_URL when the front-end is deployed
+// on a host that has no backend of its own. It defaults to the same origin's
+// /api path, which the Vite dev proxy forwards to the local backend.
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/+$/, '')
+
+// The GitHub Pages build is a static demo: there is no server behind it, so the
+// requests are answered by the in-browser API in ./demo/api.js instead.
+export const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === 'true'
+
 export class ApiError extends Error {
   constructor(message, status) {
     super(message)
@@ -9,7 +18,12 @@ export class ApiError extends Error {
 }
 
 async function request(path, { method = 'GET', body } = {}) {
-  const res = await fetch(`/api${path}`, {
+  if (DEMO_MODE) {
+    const { demoRequest } = await import('./demo/api')
+    return demoRequest(path, { method, body })
+  }
+
+  const res = await fetch(`${API_BASE}${path}`, {
     method,
     credentials: 'include',
     headers: body !== undefined ? { 'Content-Type': 'application/json' } : undefined,
@@ -47,7 +61,8 @@ export const api = {
   logout: () => request('/auth/logout', { method: 'POST' }),
   me: () => request('/auth/me'),
 
-  // Journeys (paginated: page, limit; filters: q, destination, maxPrice, group, sort)
+  // Journeys (paginated: page, limit; filters: q, destination, minPrice, maxPrice,
+  // from, to, group, available, sort)
   journeys: (params = {}) => {
     const qs = new URLSearchParams()
     for (const [key, value] of Object.entries(params)) {
@@ -62,6 +77,7 @@ export const api = {
   createBooking: (payload) => request('/bookings', { method: 'POST', body: payload }),
   myBookings: () => request('/bookings'),
   booking: (id) => request(`/bookings/${id}`),
+  updateBooking: (id, payload) => request(`/bookings/${id}`, { method: 'PATCH', body: payload }),
   pay: (id, simulate = 'success') => request(`/bookings/${id}/pay`, { method: 'POST', body: { simulate } }),
 
   // Reservations (multi-type wizard: PERSONAL | GROUP | CUSTOM)

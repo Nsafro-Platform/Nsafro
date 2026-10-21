@@ -13,6 +13,8 @@ import Book from './pages/Book'
 import Reserve from './pages/Reserve'
 import Payment from './pages/Payment'
 import MyBookings from './pages/MyBookings'
+import ETicket from './pages/ETicket'
+import EditBooking from './pages/EditBooking'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminUsers from './pages/AdminUsers'
 import AdminBookings from './pages/AdminBookings'
@@ -39,9 +41,13 @@ function RequireAdmin({ children }) {
   return children
 }
 
+// The app is served from a sub-path on GitHub Pages (e.g. "/Nsafro/"), so the
+// router has to be told which prefix to strip from the current location.
+const basename = import.meta.env.BASE_URL
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <AuthProvider>
         <Routes>
           <Route element={<Layout />}>
@@ -85,6 +91,22 @@ createRoot(document.getElementById('root')).render(
               element={
                 <RequireAuth>
                   <Payment />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="bookings/:id/ticket"
+              element={
+                <RequireAuth>
+                  <ETicket />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="bookings/:id/edit"
+              element={
+                <RequireAuth>
+                  <EditBooking />
                 </RequireAuth>
               }
             />

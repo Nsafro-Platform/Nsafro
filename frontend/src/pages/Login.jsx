@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { api } from '../api'
+import { api, DEMO_MODE } from '../api'
 import { useAuth } from '../auth'
 import PasswordField from '../components/PasswordField'
 
@@ -135,6 +135,13 @@ export default function Login() {
           <p className="swap">
             No account yet? <Link to="/register">Create one</Link>
           </p>
+          {DEMO_MODE && (
+            <p className="hint">
+              Static demo — sign in with <strong>demo@journey.demo</strong> (traveller) or{' '}
+              <strong>admin@journey.demo</strong> (back office). Password:{' '}
+              <strong>Demo1234!</strong>
+            </p>
+          )}
         </form>
       </div>
     </section>

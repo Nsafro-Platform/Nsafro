@@ -35,6 +35,18 @@ export function JourneyCard({ journey, index = 0 }) {
           {journey.destination} · {journey.durationDays} days
         </p>
         <p className="journey-card-meta">Departs {formatDate(journey.startDate)}</p>
+        {/* Availability comes from the API (capacity minus live bookings). */}
+        {typeof journey.remainingSeats === 'number' && (
+          <p className="journey-card-meta">
+            {journey.remainingSeats === 0 ? (
+              <span className="badge red">Fully booked</span>
+            ) : (
+              <span className="badge gray">
+                {journey.remainingSeats} seat{journey.remainingSeats === 1 ? '' : 's'} left
+              </span>
+            )}
+          </p>
+        )}
         <div className="journey-card-foot">
           <span>
             <span className="price-label">from </span>
