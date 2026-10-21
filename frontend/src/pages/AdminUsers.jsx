@@ -35,7 +35,7 @@ export default function AdminUsers() {
       <div className="container">
         <h1>Users</h1>
         {error && <p className="alert alert-error">{error}</p>}
-        <div className="table-wrap" style={{ marginTop: '1rem' }}>
+        <div className="table-wrap mt-16">
           <table className="bookings">
             <thead>
               <tr><th>Name</th><th>Email</th><th>Role</th><th>Actions</th></tr>

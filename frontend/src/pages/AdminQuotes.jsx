@@ -39,9 +39,9 @@ export default function AdminQuotes() {
       <div className="container">
         <h1>Quote Requests</h1>
         {error && <p className="alert alert-error">{error}</p>}
-        <div style={{ marginTop: '1rem' }}>
+        <div className="mt-16">
           {quotes.map(q => (
-            <div key={q.id} className="card" style={{ marginBottom: '1rem' }}>
+            <div key={q.id} className="card mb-16">
               <h3>{q.itineraryTitle}</h3>
               <p>User: {q.user.email} | Status: {q.status} | Indicated: {q.indicatedTotal}</p>
               <textarea

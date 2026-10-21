@@ -1,0 +1,83 @@
+@startuml diagramme-classes
+' ============================================================
+'  Nsafro — Diagramme de classes (version simple)
+'  Modèle déduit des migrations backend/src/db/migrations/*.sql
+'  Rendu : plantuml -tpng -tsvg diagramme-classes.puml
+' ============================================================
+
+title <b>Nsafro — Diagramme de classes</b>
+
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam ArrowColor #4A5568
+skinparam class {
+  BackgroundColor #F7FBFF
+  BorderColor #2C6E9B
+  HeaderBackgroundColor #DCEAF5
+}
+
+class "Utilisateur" as Utilisateur {
+  - id : int
+  - email : string
+  - nomComplet : string
+  - role : "user" | "admin"
+  - dateCreation : date
+}
+
+class "Voyage" as Voyage {
+  - id : int
+  - titre : string
+  - destination : string
+  - dateDebut : date
+  - dateFin : date
+  - dureeJours : int
+  - prix : decimal
+  - capacite : int
+  - statut : "draft" | "published" | "archived"
+  - estGroupe : boolean
+}
+
+class "Option" as Option {
+  - id : int
+  - categorie : "transport" | "hébergement" | "activité"
+  - nom : string
+  - prix : decimal
+}
+
+class "Reservation" as Reservation {
+  - id : int
+  - reference : string
+  - type : "PERSONAL" | "GROUP" | "CUSTOM"
+  - nbVoyageurs : int
+  - total : decimal
+  - statut : "pending" | "confirmed" | "cancelled"
+  - statutPaiement : "unpaid" | "paid" | "failed"
+  - dateCreation : date
+}
+
+class "Participant" as Participant {
+  - id : int
+  - nomComplet : string
+  - statut : "invited" | "confirmed" | "declined"
+}
+
+class "Paiement" as Paiement {
+  - id : int
+  - resultat : "success" | "failure"
+  - montant : decimal
+  - date : date
+}
+
+Utilisateur "1" -- "0..*" Reservation : effectue
+Utilisateur "1" -- "0..*" Voyage : gère
+Voyage "1" -- "0..*" Reservation : concerne
+Reservation "1" *-- "1..*" Participant : inclut
+Reservation "1" -- "0..*" Paiement : règle
+Reservation "0..*" -- "0..*" Option : sélectionne
+
+note bottom of Reservation
+  Version simplifiée : regroupe les réservations
+  classiques et celles de l'assistant.
+end note
+
+@enduml

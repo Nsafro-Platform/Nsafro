@@ -4,8 +4,6 @@ import { api, formatDate, formatPrice } from '../api'
 import { useAuth } from '../auth'
 import { PanelSkeleton } from '../components/Loading'
 
-const MAX_TRAVELLERS = 20
-
 export default function Book() {
   const { id } = useParams()
   const { user } = useAuth()
@@ -140,6 +138,7 @@ export default function Book() {
                 </button>
               </div>
 
+              <h2 className="sub-title">Traveller names</h2>
               {journey.isGroup ? (
                 <p className="hint mb-16">
                   This is an organized <strong>group journey</strong> — every participant is listed on
