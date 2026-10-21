@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="690px" preserveAspectRatio="none" style="width:714px;height:690px;" version="1.1" viewBox="0 0 714 690" width="714px" zoomAndPan="magnify"><defs/><g><text fill="#000000" font-family="sans-serif" font-size="18" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="465" x="136.5" y="16.708">Nsafro — Cas d'utilisation du voyageur inscrit</text><!--MD5=[49cf4e5f95c844d543a6738eb7957ff9]
+cluster Espace voyageur--><rect fill="#FFFFFF" height="550" style="stroke: #000000; stroke-width: 1.5;" width="528.73" x="175" y="44.9731"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="135" x="371.865" y="59.9682">Espace voyageur</text><ellipse cx="296.4537" cy="268.9779" fill="#F4F9FD" rx="64.8237" ry="15.3647" style="stroke: #2C6E9B; stroke-width: 1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="93" x="249.9537" y="273.6263">Se connecter</text><ellipse cx="296.4489" cy="335.9729" fill="#F4F9FD" rx="71.8489" ry="16.7698" style="stroke: #2C6E9B; stroke-width: 1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="111" x="240.9489" y="340.6213">Se déconnecter</text><ellipse cx="296.4451" cy="405.9761" fill="#F4F9FD" rx="81.4151" ry="18.683" style="stroke: #2C6E9B; stroke-width: 1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="134" x="229.4451" y="410.6246">Consulter son profil</text><ellipse cx="296.4518" cy="197.9695" fill="#F4F9FD" rx="89.2318" ry="20.2464" style="stroke: #2C6E9B; stroke-width: 1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="152" x="220.4518" y="202.6179">Consulter les voyages</text><ellipse cx="296.4496" cy="102.9731" fill="#F4F9FD" rx="105.4496" ry="23.4899" style="stroke: #2C6E9B; stroke-width: 1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="188" x="202.4496" y="107.6215">Consulter une fiche voyage</text><ellipse cx="296.4505" cy="478.9732" fill="#F4F9FD" rx="82.7005" ry="18.9401" style="stroke: #2C6E9B; stroke-width: 1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="137" x="227.9505" y="483.6217">Réserver un voyage</text><ellipse cx="606.3051" cy="543.9761" fill="#F4F9FD" rx="81.4151" ry="18.683" style="stroke: #2C6E9B; stroke-width: 1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="134" x="539.3051" y="548.6246">Payer la réservation</text><ellipse cx="296.4451" cy="555.9681" fill="#F4F9FD" rx="104.0751" ry="23.215" style="stroke: #2C6E9B; stroke-width: 1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="185" x="203.9451" y="560.6166">Consulter ses réservations</text><!--MD5=[f00f37bcd2060cab1048873eba4e3a77]
+entity Voyageur--><ellipse cx="67" cy="348.6731" fill="#FEFECE" rx="16" ry="16" style="stroke: #A80036; stroke-width: 1.5;"/><path d="M67,368.6731 C71,368.6731 74,368.6731 78,364.6731 C86,364.6731 94,372.6731 94,380.6731 L94,384.6731 C94,388.6731 90,392.6731 86,392.6731 L48,392.6731 C44,392.6731 40,388.6731 40,384.6731 L40,380.6731 C40,372.6731 48,364.6731 56,364.6731 C60,368.6731 63,368.6731 67,368.6731 " fill="#FEFECE" style="stroke: #A80036; stroke-width: 1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="65" x="6" y="407.1682">Voyageur</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="122" x="6" y="423.4651">(utilisateur inscrit)</text><!--MD5=[06f96eba414547d335a7bceafe0bcc8c]
+link Voyageur to UC_Login--><path d="M121.87,330.7131 C135.83,320.0431 151.36,309.6431 167,301.9731 C188.35,291.4931 213.38,284.0931 235.65,279.0031 " fill="none" id="Voyageur-&gt;UC_Login" style="stroke: #4A5568; stroke-width: 1.0;"/><polygon fill="#4A5568" points="240.37,277.9531,230.7154,276.0067,235.4897,279.0408,232.4557,283.8152,240.37,277.9531" style="stroke: #4A5568; stroke-width: 1.0;"/><!--MD5=[6c72420655c578539e37c4de2136f03b]
+link Voyageur to UC_Logout--><path d="M128.36,367.5631 C160.82,361.4231 200.78,353.8631 233.48,347.6831 " fill="none" id="Voyageur-&gt;UC_Logout" style="stroke: #4A5568; stroke-width: 1.0;"/><polygon fill="#4A5568" points="238.01,346.8231,228.4238,344.5637,233.0969,347.7515,229.9092,352.4246,238.01,346.8231" style="stroke: #4A5568; stroke-width: 1.0;"/><!--MD5=[fb57a881325b5499df3084b730154c0c]
+link Voyageur to UC_Profile--><path d="M128.36,386.1331 C155.63,389.3731 188.21,393.2431 217.32,396.6931 " fill="none" id="Voyageur-&gt;UC_Profile" style="stroke: #4A5568; stroke-width: 1.0;"/><polygon fill="#4A5568" points="221.97,397.2431,213.5015,392.2147,217.0045,396.6564,212.5628,400.1594,221.97,397.2431" style="stroke: #4A5568; stroke-width: 1.0;"/><!--MD5=[cc749808a3e0543746806b824eec2083]
+link Voyageur to UC_Browse--><path d="M90.56,330.7231 C107.49,299.4731 133.49,260.2231 167,235.9731 C181.98,225.1331 200.05,217.3531 217.84,211.7931 " fill="none" id="Voyageur-&gt;UC_Browse" style="stroke: #4A5568; stroke-width: 1.0;"/><polygon fill="#4A5568" points="222.4,210.4231,212.6285,209.1913,217.6128,211.8664,214.9377,216.8508,222.4,210.4231" style="stroke: #4A5568; stroke-width: 1.0;"/><!--MD5=[0c965abcb51066870d4d8feca9dfb963]
+link Voyageur to UC_Detail--><path d="M78.97,330.8831 C92.3,282.1831 119.19,207.4531 167,159.9731 C182.76,144.3231 203.54,132.5931 223.8,123.9831 " fill="none" id="Voyageur-&gt;UC_Detail" style="stroke: #4A5568; stroke-width: 1.0;"/><polygon fill="#4A5568" points="228.37,122.0931,218.5245,121.8364,223.7496,124.004,221.582,129.2291,228.37,122.0931" style="stroke: #4A5568; stroke-width: 1.0;"/><!--MD5=[c9893b88a9a055733e5d1b102218edf6]
+link Voyageur to UC_Book--><path d="M128.25,421.1331 C140.71,428.7431 154,436.1031 167,441.9731 C186.83,450.9131 209.37,458.2631 229.96,463.9931 " fill="none" id="Voyageur-&gt;UC_Book" style="stroke: #4A5568; stroke-width: 1.0;"/><polygon fill="#4A5568" points="234.54,465.2431,226.9236,458.9988,229.7192,463.9167,224.8013,466.7122,234.54,465.2431" style="stroke: #4A5568; stroke-width: 1.0;"/><!--MD5=[f79105b0d8105c5c1878a0345758e143]
+link Voyageur to UC_Pay--><path d="M74.6,427.0031 C84.59,479.0331 108.99,559.6031 167,596.9731 C293.96,678.7531 485.12,603.2631 566.46,564.1331 " fill="none" id="Voyageur-&gt;UC_Pay" style="stroke: #4A5568; stroke-width: 1.0;"/><polygon fill="#4A5568" points="570.76,562.0431,560.9168,562.3772,566.2625,564.2276,564.412,569.5733,570.76,562.0431" style="stroke: #4A5568; stroke-width: 1.0;"/><!--MD5=[7a13e21f7da5a9b657e9517494516a7b]
+link Voyageur to UC_History--><path d="M92.79,427.2431 C110.02,456.4131 135.51,492.2331 167,514.9731 C180.61,524.7931 196.67,532.3331 212.74,538.0931 " fill="none" id="Voyageur-&gt;UC_History" style="stroke: #4A5568; stroke-width: 1.0;"/><polygon fill="#4A5568" points="217.23,539.6431,210.0231,532.9304,212.5025,538.0149,207.418,540.4944,217.23,539.6431" style="stroke: #4A5568; stroke-width: 1.0;"/><!--MD5=[268166def43f153f58bb7fb2ecfad53e]
+link UC_Detail to UC_Browse--><path d="M296.45,126.8931 C296.45,140.3831 296.45,157.2631 296.45,171.1931 " fill="none" id="UC_Detail-&gt;UC_Browse" style="stroke: #4A5568; stroke-width: 1.0; stroke-dasharray: 7.0,7.0;"/><polygon fill="#4A5568" points="296.45,175.8431,300.45,166.8431,296.45,170.8431,292.45,166.8431,296.45,175.8431" style="stroke: #4A5568; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="60" x="254.95" y="156.66">«extend»</text><!--MD5=[c3b83488a7ec1ea791631790dbdb21c0]
+link UC_Book to UC_Pay--><path d="M358.27,491.8131 C410.41,502.8231 485.38,518.6431 539.03,529.9731 " fill="none" id="UC_Book-&gt;UC_Pay" style="stroke: #4A5568; stroke-width: 1.0; stroke-dasharray: 7.0,7.0;"/><polygon fill="#4A5568" points="543.66,530.9531,535.6737,525.1895,538.7666,529.9259,534.0302,533.0189,543.66,530.9531" style="stroke: #4A5568; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="61" x="432.9" y="503.64">«include»</text><!--MD5=[c53f6cccbb2f47028e7a1678801341f6]
+link UC_History to UC_Pay--><path d="M399.54,551.9931 C438.42,550.4731 482.3,548.7631 519.52,547.3131 " fill="none" id="UC_History-&gt;UC_Pay" style="stroke: #4A5568; stroke-width: 1.0; stroke-dasharray: 7.0,7.0;"/><polygon fill="#4A5568" points="524.4,547.1231,515.2573,543.4609,519.4035,547.3092,515.5551,551.4554,524.4,547.1231" style="stroke: #4A5568; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="60" x="433.4" y="544.61">«extend»</text><!--MD5=[85da804c7dbdf574c9e2aead53e84ef1]
+@startuml diagramme-cas-utilisation-voyageur
+
+title <b>Nsafro — Cas d'utilisation du voyageur inscrit</b>
+
+left to right direction
+skinparam shadowing false
+skinparam actorStyle awesome
+skinparam ArrowColor #4A5568
+skinparam usecase {
+  BackgroundColor #F4F9FD
+  BorderColor #2C6E9B
+  FontSize 14
+}
+
+actor "Voyageur\n(utilisateur inscrit)" as Voyageur
+
+rectangle "Espace voyageur" {
+  usecase "Se connecter" as UC_Login
+  usecase "Se déconnecter" as UC_Logout
+  usecase "Consulter son profil" as UC_Profile
+  usecase "Consulter les voyages" as UC_Browse
+  usecase "Consulter une fiche voyage" as UC_Detail
+  usecase "Réserver un voyage" as UC_Book
+  usecase "Payer la réservation" as UC_Pay
+  usecase "Consulter ses réservations" as UC_History
+}
+
+Voyageur - -> UC_Login
+Voyageur - -> UC_Logout
+Voyageur - -> UC_Profile
+Voyageur - -> UC_Browse
+Voyageur - -> UC_Detail
+Voyageur - -> UC_Book
+Voyageur - -> UC_Pay
+Voyageur - -> UC_History
+
+UC_Detail .> UC_Browse : <<extend>>
+UC_Book ..> UC_Pay : <<include>>
+UC_History ..> UC_Pay : <<extend>>
+
+@enduml
+
+PlantUML version 1.2020.02(Sun Mar 01 11:22:07 GMT+01:00 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 25.0.4.1+1-LTS
+Operating System: Linux
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>

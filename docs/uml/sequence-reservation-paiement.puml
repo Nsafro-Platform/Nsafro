@@ -1,0 +1,70 @@
+@startuml sequence-reservation-paiement
+' ============================================================
+'  Nsafro — Séquence : réservation assistée + paiement
+'  Couvre les flux PERSONAL / GROUP / CUSTOM
+'  Rendu : plantuml -tpng -tsvg sequence-reservation-paiement.puml
+' ============================================================
+
+title <b>Nsafro — Séquence : réservation et paiement</b>
+
+autonumber
+skinparam shadowing false
+skinparam ArrowColor #4A5568
+skinparam sequence {
+  LifeLineBorderColor #2C6E9B
+  ParticipantBackgroundColor #DCEAF5
+  ParticipantBorderColor #2C6E9B
+}
+
+actor "Voyageur" as U
+participant "Application React" as SPA
+participant "API Express" as API
+database "PostgreSQL" as DB
+
+U -> SPA : Ouvre l'assistant (/reserve)
+SPA -> API : GET /api/reservations/catalog
+API -> DB : SELECT voyages publiés + options
+DB --> API : catalogue et places restantes
+API --> SPA : catalogue
+
+U -> SPA : Choisit le type et les options
+SPA -> API : POST /api/reservations/quote
+API -> DB : Lit les prix des options
+DB --> API : prix
+API -> API : Valide et calcule le devis
+API --> SPA : sous-total, taxes, frais, total
+SPA --> U : Affiche le prix
+
+U -> SPA : Confirme la réservation
+SPA -> API : POST /api/reservations
+
+API -> DB : BEGIN + verrouille le voyage (FOR UPDATE)
+API -> DB : Vérifie les places restantes
+
+alt Places insuffisantes
+  API --> SPA : 409 « Not enough seats left »
+  SPA --> U : Affiche l'erreur
+else Places disponibles
+  API -> DB : INSERT reservation (pending)
+  API -> DB : INSERT participants
+  API -> DB : COMMIT
+  API --> SPA : 201 réservation (référence)
+end
+
+U -> SPA : Clique sur « Payer »
+SPA -> API : POST /api/reservations/{id}/pay
+
+API -> DB : BEGIN + verrouille la réservation
+API -> DB : INSERT reservation_payments (succès / échec)
+
+alt Paiement accepté
+  API -> DB : UPDATE statut = confirmed, paiement = paid
+  API --> SPA : 200 réservation confirmée
+  SPA --> U : Confirmation
+else Paiement refusé
+  API -> DB : UPDATE paiement = failed
+  API --> SPA : 200 paiement échoué
+  SPA --> U : Invite à réessayer
+end
+
+@enduml

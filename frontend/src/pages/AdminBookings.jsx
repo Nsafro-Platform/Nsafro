@@ -38,7 +38,7 @@ export default function AdminBookings() {
       <div className="container">
         <h1>Bookings</h1>
         {error && <p className="alert alert-error">{error}</p>}
-        <div className="table-wrap" style={{ marginTop: '1rem' }}>
+        <div className="table-wrap mt-16">
           <table className="bookings">
             <thead>
               <tr><th>Ref</th><th>Journey</th><th>User</th><th>Travellers</th><th>Total</th><th>Status</th><th>Payment</th><th>Actions</th></tr>

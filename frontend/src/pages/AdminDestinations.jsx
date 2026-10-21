@@ -16,7 +16,7 @@ export default function AdminDestinations() {
       <div className="container">
         <h1>Destinations</h1>
         {error && <p className="alert alert-error">{error}</p>}
-        <div className="card" style={{ marginTop: '1rem' }}>
+        <div className="card mt-16">
           <ul>
             {destinations.map((d, i) => (
               <li key={i}>{d.destination} ({d.journey_count} journeys)</li>

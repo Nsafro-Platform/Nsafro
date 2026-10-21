@@ -1,0 +1,44 @@
+@startuml sequence-historique-reservations
+' ============================================================
+'  Nsafro — Séquence : historique des réservations (SCRUM-15)
+'  Rendu : plantuml -tpng -tsvg sequence-historique-reservations.puml
+' ============================================================
+
+title <b>Nsafro — Séquence : consulter l'historique des réservations</b>
+
+autonumber
+skinparam shadowing false
+skinparam ArrowColor #4A5568
+skinparam sequence {
+  LifeLineBorderColor #2C6E9B
+  ParticipantBackgroundColor #DCEAF5
+  ParticipantBorderColor #2C6E9B
+}
+
+actor "Voyageur" as U
+participant "Application React" as SPA
+participant "API Express" as API
+database "PostgreSQL" as DB
+
+U -> SPA : Ouvre « Mes réservations »
+SPA -> API : GET /api/bookings
+API -> DB : SELECT bookings WHERE user_id = ...
+DB --> API : réservations classiques
+API --> SPA : liste des réservations classiques
+
+SPA -> API : GET /api/reservations
+API -> DB : SELECT reservations WHERE user_id = ...
+DB --> API : réservations de l'assistant
+API --> SPA : liste des réservations de l'assistant
+
+SPA -> SPA : Fusionne les deux listes et trie par date
+SPA --> U : Historique avec statut et bouton « Payer » si impayé
+
+opt Paiement d'une réservation impayée
+  U -> SPA : Clique sur « Payer »
+  SPA -> API : POST /api/{bookings|reservations}/{id}/pay
+  API --> SPA : statut mis à jour
+  SPA --> U : Rafraîchit l'historique
+end
+
+@enduml
