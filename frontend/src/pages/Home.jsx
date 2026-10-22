@@ -53,6 +53,7 @@ export default function Home() {
             </div>
             {/* <ul className="hero-points">
               <li>Curated journeys</li>
+              
               <li>Simulated checkout</li>
               <li>Every confirmation in one place</li>
             </ul> */}
